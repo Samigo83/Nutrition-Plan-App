@@ -1,0 +1,55 @@
+Nutrition plan
+
+CREATE TABLE component(
+	EUFDNAME VARCHAR(30) NOT NULL,
+	COMPUNIT VARCHAR(10),
+	CMPCLASS VARCHAR(30),
+	CMPCLASSP VARCHAR(30),
+	PRIMARY KEY (EUFDNAME)
+);
+
+LOAD DATA INFILE 'C:/Users/samip/OneDrive/Tiedostot/Projektit/Nutrition/component.csv' 
+INTO TABLE component
+FIELDS TERMINATED BY ';' 
+LINES TERMINATED BY '\n';
+
+ALTER TABLE component_value
+ADD FOREIGN KEY (FOODID) REFERENCES food(FOODID);
+
+ALTER TABLE component_value
+ADD FOREIGN KEY (EUFDNAME) REFERENCES component(EUFDNAME);
+
+SELECT food.foodname, eufdname, bestloc 
+FROM food, component_value 
+WHERE food.foodid = component_value.foodid and food.foodid = 153;
+
+SELECT food.foodname, bestloc, component.eufdname, compunit 
+FROM food, component_value, component
+WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname and food.foodid = 153
+and component.eufdname in ('ENERC', 'FAT', 'CHOAVL', 'PROT')
+
+SELECT food.foodid, food.foodname, component.eufdname, bestloc, compunit
+FROM food, component_value, component
+WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname and
+component.eufdname = 'ENERC' and bestloc > 1500 order by bestloc;
+
+SELECT food.foodname, component_value.bestloc
+FROM food, component_value, component
+WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname and
+component.eufdname in ('ENERC', 'FAT', 'CHOAVL', 'PROT') and component_value.bestloc > 50;
+
+select foodname from food where foodname like "kana%";
+
+SELECT food.foodid, food.foodname, component.eufdname, bestloc, compunit
+FROM food, component_value, component
+WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname and
+component.eufdname = 'ENERC' and bestloc > 1500 order by bestloc;
+
+SELECT bestloc, bestloc / 4.184 AS 'KCAL'
+FROM component_value, food, component
+WHERE food.foodid = component_value.foodid and
+component_value.eufdname = component.eufdname and
+food.foodid = 153 and component.eufdname = 'ENERC';
+
+USER TABLE:
+
