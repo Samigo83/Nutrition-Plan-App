@@ -34,5 +34,6 @@ class Meal:
             self.energy_amount += round(float(self.extra_obj.energy * kwargs['extra_amount']), 1)
 
 
-#breku = Meal(carb_id=153, carb_amount=1, fat_id=11086, fat_amount=0.3, protein_id=649, protein_amount=1.5, extra=None)
+#kwargs = {'carb_id':153, 'carb_amount':1, 'fat_id':11086, 'fat_amount':0.3, 'protein_id':649, 'protein_amount':1.5, 'extra':None}
+#breku = Meal(**kwargs)
 #print(round(float(breku.energy_amount), 1))
