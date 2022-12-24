@@ -19,8 +19,33 @@
             <input id="psw" type="password" placeholder="Enter your password" required>
 
             <button id="login-btn" type="submit">Login</button>
-            <button type="submit">Sign up</button>
+            <button type="button" id="login-signup-btn">Sign up</button>
             <p id="error-message"></p>
+        </form>
+    </div>
+    <div id="signup-modal" class="hide">
+        <form id="signup-form">
+            <label for="signup-email"><b>Email</b></label>
+            <input id="signup-email" type="text" placeholder="Enter your email" required>
+
+            <label for="signup-psw"><b>Password</b></label>
+            <input id="signup-psw" type="password" placeholder="Enter your password" required>
+
+            <label for="signup-age"><b>Age</b></label>
+            <input id="signup-age" type="text" placeholder="Enter your age" required>
+
+            <label for="signup-height"><b>Height</b></label>
+            <input id="signup-height" type="text" placeholder="Enter your height" required>
+
+            <label for="signup-weight"><b>Weight</b></label>
+            <input id="signup-weight" type="text" placeholder="Enter your weight" required>
+
+            <label for="signup-activity-lvl"><b>Activity level</b></label>
+            <input id="signup-activity-lvl" type="text" placeholder="Enter your activity level" required>
+
+            <button id="signup-btn" type="submit">Sign up</button>
+            <button type="button" id="signup-cancel-btn">Cancel</button>
+            <p id="signup-error-message"></p>
         </form>
     </div>
 </div>
