@@ -8,6 +8,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+
 # http://127.0.0.1:5000/login?username=x&password=x
 @app.route('/login')
 def login():
@@ -15,6 +16,24 @@ def login():
     user = args.get('username')
     psw = args.get('password')
     user = User(user, psw)
+    return json.dumps(user, default=lambda o: o.__dict__, indent=4)
+
+
+# http://127.0.0.1:5000/newuser?email=${email}&psw=${psw}&fname=${fname}&lname=${lname}&age=${age}&sex=${sex}
+# &weight=${weight}&height=${height}&activity_lvl=${activityLevel}
+@app.route('/newuser')
+def newuser():
+    args = request.args
+    email = args.get('email')
+    psw = args.get('psw')
+    fname = args.get('fname')
+    lname = args.get('lname')
+    age = int(args.get('age'))
+    sex = args.get('sex')
+    weight = int(args.get('weight'))
+    height = int(args.get('height'))
+    activity_lvl = int(args.get('activity_lvl'))
+    user = NewUser(fname, lname, email, psw, age, sex, weight, height, activity_lvl)
     return json.dumps(user, default=lambda o: o.__dict__, indent=4)
 
 

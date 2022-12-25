@@ -9,7 +9,7 @@ class NewUser:
         db_emails = query_cursor.fetchall()
         if query_cursor.rowcount > 0:
             for db_email in db_emails:
-                if db_email[0] == email:
+                if db_email[0].upper() == email.upper():
                     self.active = False
                     return
                 else:
@@ -17,11 +17,14 @@ class NewUser:
                                f"('{fname}', '{lname}', '{email}', '{password}', '{age}', '{sex}', '{weight}', '{height}', '{activity_lvl}')"
                     query_cursor = connection.cursor()
                     query_cursor.execute(user_sql)
+                    self.active = True
+                    return
         else:
             user_sql = f"INSERT INTO users(fname, lname, email, password, age, sex, weight, height, activity_lvl) VALUES " \
                        f"('{fname}', '{lname}', '{email}', '{password}', '{age}', '{sex}', '{weight}', '{height}', '{activity_lvl}')"
             query_cursor = connection.cursor()
             query_cursor.execute(user_sql)
+            self.active = True
 
 
 class User:
@@ -30,7 +33,7 @@ class User:
         query_cursor = connection.cursor()
         query_cursor.execute(sql)
         user = query_cursor.fetchone()
-        if query_cursor.rowcount > 0:
+        if query_cursor.rowcount > 0 and email.upper() == user[3].upper() and password.upper() == user[4].upper():
             self.id = user[0]
             self.fname = user[1]
             self.lname = user[2]
