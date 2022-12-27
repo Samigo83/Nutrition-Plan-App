@@ -10,55 +10,163 @@
 </head>
 <body>
 <div id="container">
-    <div id="login-modal">
-        <form id="login-form">
-            <label for="uname"><b>Username</b></label>
-            <input id="uname" type="text" placeholder="Enter your email" required>
-
-            <label for="psw"><b>Password</b></label>
-            <input id="psw" type="password" placeholder="Enter your password" required>
-
-            <button id="login-btn" type="submit">Login</button>
-            <button id="login-signup-btn" type="button">Sign up</button>
-            <p id="error-message"></p>
-        </form>
+    <header id="page-header" class="flex center">
+        <h1>Nutrition planning app</h1>
+    </header>
+    <div id="buttons" class="hide">
+        <button id="my-plan-button">My plans</button>
     </div>
-    <div id="signup-modal" class="hide">
-        <form id="signup-form">
-            <label for="signup-email"><b>Email</b></label>
-            <input id="signup-email" type="text" placeholder="Enter your email" required>
+    <div id="page-content" class="flex">
+        <div id="user-info">
+            <div id="user-information">
+                <h2>Welcome to plan healthy diet, <span id="username"></span></h2>
+                <p>Your recommended calorie intake is: <span id="calorie-intake"></span></p>
+            </div>
+        </div>
+        <div id="plan" class="flex hide">
+            <div id="dropdown" class="drop-down-content hide">
+                <input id="search-food-item" type="text" placeholder="Search for food item">
+                <div id="food-dropdown">
+                </div>
+            </div>
+            <div id="meals" class="flex hide">
+                <div class="meal-item">
+                    <h3>Breakfast</h3>
+                    <table id="breakfast">
+                        <tr>
+                            <td>Name</td>
+                            <td>Carbs</td>
+                            <td>Fat</td>
+                            <td>Protein</td>
+                            <td>Energy (kcal)</td>
+                            <td class="hide">id</td>
+                            <td>amount</td>
+                            <td class="hide">delete button</td>
+                        </tr>
+                    </table>
+                    <div class="flex space-between color-greenish">
+                        <button id="breakfast-edit-btn">Edit</button>
+                        <button id="breakfast-save-btn">Save</button>
+                    </div>
+                </div>
+                <div class="meal-item">
+                    <h3>Lunch</h3>
+                    <table id="lunch">
+                        <tr>
+                            <td>Name</td>
+                            <td>Carbs</td>
+                            <td>Fat</td>
+                            <td>Protein</td>
+                            <td>Energy (kcal)</td>
+                            <td class="hide">id</td>
+                            <td class="hide">amount</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="meal-item">
+                    <h3>Dinner</h3>
+                    <table id="dinner">
+                        <tr>
+                            <td>Name</td>
+                            <td>Carbs</td>
+                            <td>Fat</td>
+                            <td>Protein</td>
+                            <td>Energy (kcal)</td>
+                            <td class="hide">id</td>
+                            <td class="hide">amount</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="meal-item">
+                    <h3>Snack</h3>
+                    <table id="snack">
+                        <tr>
+                            <td>Name</td>
+                            <td>Carbs</td>
+                            <td>Fat</td>
+                            <td>Protein</td>
+                            <td>Energy (kcal)</td>
+                            <td class="hide">id</td>
+                            <td class="hide">amount</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="meal-item">
+                    <h3>Supper</h3>
+                    <table id="supper">
+                        <tr>
+                            <td>Name</td>
+                            <td>Carbs</td>
+                            <td>Fat</td>
+                            <td>Protein</td>
+                            <td>Energy (kcal)</td>
+                            <td class="hide">id</td>
+                            <td class="hide">amount</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="login-modal" class="flex center">
+            <form id="login-form">
+                <label for="uname"><b>Username</b></label>
+                <input id="uname" type="text" placeholder="Enter your email" required>
 
-            <label for="signup-psw"><b>Password</b></label>
-            <input id="signup-psw" type="password" placeholder="Enter your password" required>
+                <label for="psw"><b>Password</b></label>
+                <input id="psw" type="password" placeholder="Enter your password" required>
 
-            <label for="signup-psw2"><b>Confirm password</b></label>
-            <input id="signup-psw2" type="password" placeholder="Confirm your password" required>
-
-            <label for="signup-fname"><b>Firstname</b></label>
-            <input id="signup-fname" type="text" placeholder="Enter your firstname" required>
-
-            <label for="signup-lname"><b>Lastname</b></label>
-            <input id="signup-lname" type="text" placeholder="Enter your lastname" required>
-
-            <label for="signup-age"><b>Age</b></label>
-            <input id="signup-age" type="text" placeholder="Enter your age" required>
-
-            <label for="signup-sex"><b>Gender</b></label>
-            <input id="signup-sex" type="text" placeholder="Enter your gender" required>
-
-            <label for="signup-height"><b>Height</b></label>
-            <input id="signup-height" type="text" placeholder="Enter your height" required>
-
-            <label for="signup-weight"><b>Weight</b></label>
-            <input id="signup-weight" type="text" placeholder="Enter your weight" required>
-
-            <label for="signup-activity-lvl"><b>Activity level</b></label>
-            <input id="signup-activity-lvl" type="text" placeholder="Enter your activity level" required>
-
-            <button id="signup-signup-btn" type="submit">Sign up</button>
-            <button id="signup-cancel-btn" type="button">Cancel</button>
-            <p id="signup-error-message"></p>
-        </form>
+                <button id="login-btn" type="submit">Login</button>
+                <button id="login-signup-btn" type="button">Sign up</button>
+                <p id="error-message"></p>
+            </form>
+        </div>
+        <div id="signup-modal" class="hide">
+            <h2 id="signup-error-message"></h2>
+            <form id="signup-form" class="flex center">
+                <div class="signup-item">
+                    <label for="signup-email"><b>Email</b></label>
+                    <input id="signup-email" type="text" placeholder="Enter your email" required>
+                </div>
+                <div class="signup-item">
+                    <label for="signup-psw"><b>Password</b></label>
+                    <input id="signup-psw" type="password" placeholder="Enter your password" required>
+                    <label for="signup-psw2"><b>Confirm password</b></label>
+                    <input id="signup-psw2" type="password" placeholder="Confirm your password" required>
+                </div>
+                <div class="signup-item">
+                    <label for="signup-fname"><b>Firstname</b></label>
+                    <input id="signup-fname" type="text" placeholder="Enter your firstname" required>
+                </div>
+                <div class="signup-item">
+                    <label for="signup-lname"><b>Lastname</b></label>
+                    <input id="signup-lname" type="text" placeholder="Enter your lastname" required>
+                </div>
+                <div class="signup-item">
+                    <label for="signup-age"><b>Age</b></label>
+                    <input id="signup-age" type="text" placeholder="Enter your age" required>
+                </div>
+                <div class="signup-item">
+                    <label for="signup-sex"><b>Gender</b></label>
+                    <input id="signup-sex" type="text" placeholder="Enter your gender" required>
+                </div>
+                <div class="signup-item">
+                    <label for="signup-height"><b>Height</b></label>
+                    <input id="signup-height" type="text" placeholder="Enter your height" required>
+                </div>
+                <div class="signup-item">
+                    <label for="signup-weight"><b>Weight</b></label>
+                    <input id="signup-weight" type="text" placeholder="Enter your weight" required>
+                </div>
+                <div class="signup-item">
+                    <label for="signup-activity-lvl"><b>Activity level</b></label>
+                    <input id="signup-activity-lvl" type="text" placeholder="Enter your activity level" required>
+                </div>
+            </form>
+            <div class="flex center">
+                <button id="signup-signup-btn" type="submit">Sign up</button>
+                <button id="signup-cancel-btn" type="button">Cancel</button>
+            </div>
+        </div>
     </div>
 </div>
 </body>

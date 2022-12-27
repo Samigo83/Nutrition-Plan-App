@@ -1,3 +1,183 @@
+body {
+    background-color: #deffd7;
+}
+
+h3 {
+    margin: .5rem;
+    padding: .5rem;
+}
+
+tbody {
+    width: 100%;
+}
+
+button {
+    margin: .5rem;
+    border-radius: 4px;
+}
+
+#buttons {
+    background-color: #a3d7a2;
+    padding: 1rem;
+    margin: 0;
+}
+
+#page-content {
+    position: relative;
+    background-color: #fdfffd;
+    flex-wrap: wrap;
+}
+
+#user-info {
+    width: 100%;
+    background-color: #deffd7;
+}
+
+#plan {
+    position: relative;
+    width: 100%;
+}
+
+#dropdown {
+    position: relative;
+    width: 40%;
+}
+
+#meals {
+    width: 100%;
+    flex-wrap: wrap;
+    height: fit-content;
+    justify-content: space-between;
+}
+
+.meal-item {
+    width: 100%;
+    margin: 1rem;
+    border: 2px solid black;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+#meals table {
+    width: 100%;
+    background-color: #deffd7;
+}
+
+
+#meals table tr {
+    width: 100%;
+    margin: .5rem;
+}
+
+#meals table td {
+    width: calc(100% / 8 - 1rem);
+    padding: .5rem;
+}
+
+#login-modal {
+    position: absolute;
+    width: 100%;
+    background-color: #deffd7;
+}
+
+#signup-modal {
+    position: absolute;
+    width: 100%;
+    background-color: #deffd7;
+}
+
+
+#signup-form {
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+#signup-error-message {
+    width: 100%;
+    text-align: center;
+    color: #e53943;
+}
+
+.signup-item {
+    display: flex;
+    width: calc(100% / 3 - 6 * 2rem);
+    margin: 2rem;
+    flex-wrap: wrap;
+    text-align: center;
+    justify-content: center;
+    align-self: flex-start;
+}
+
+#signup-form label {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+#signup-form input {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    align-self: flex-start;
+}
+
+#signup-buttons {
+    display: inline;
+    align-items: center;;
+}
+
+#login-modal form {
+    margin-top: 10rem;
+}
+
+.drop-down-content {
+    position: absolute;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    background-color: #deffd7;
+    border: 1px solid #ddd;
+    z-index: 1;
+}
+
+.drop-down-content a {
+    color: black;
+    margin: .5rem;
+    padding: 6px 8px;
+    text-decoration: none;
+    display: inline;
+}
+
+#food-dropdown input {
+    margin: auto .5rem auto 0;
+    padding: .5rem;
+    display: none;
+}
+
+#food-dropdown button {
+    margin: auto .5rem auto 0;
+    padding: .5rem;
+    display: none;
+}
+
+.drop-down-content a:hover {
+   background-color: #d5d5d5;
+}
+
+.flex {
+    display: flex;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
 .hide {
     display: none;
 }
+
+.center {
+    justify-content: center;
+}
+
+.color-greenish {
+    background-color: #b3e8a3;
+}
+

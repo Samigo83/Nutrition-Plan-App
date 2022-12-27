@@ -28,6 +28,20 @@ FROM food, component_value, component
 WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname and food.foodid = 153
 and component.eufdname in ('ENERC', 'FAT', 'CHOAVL', 'PROT') order by eufdname asc;
 
+SELECT food.foodname, bestloc, component.eufdname, compunit
+FROM food, component_value, component
+WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname and food.foodid = 153
+and component.eufdname in ('ENERC', 'FAT', 'CHOAVL', 'PROT') order by eufdname asc;
+
+SELECT foodname, foodid from food;
+
+SELECT food.foodname, bestloc, component.eufdname as energy, compunit
+FROM food, component_value, component
+WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname
+and component.eufdname = 'ENERC' order by energy asc;
+
+SELECT foodname, foodid from food;
+
 SELECT food.foodid, food.foodname, component.eufdname, bestloc, compunit
 FROM food, component_value, component
 WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname and
