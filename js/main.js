@@ -2,7 +2,11 @@
 
 // Global variables
 const baseUrl = 'http://127.0.0.1:5000/';
-let mealTarget = ''
+let mealTarget;
+let totalCarb = 0.0;
+let totalFat = 0.0;
+let totalProtein = 0.0;
+let totalEnergy = 0.0;
 
 // Function to fetch data from API
 async function getData(url) {
@@ -24,32 +28,40 @@ function checkGenderInput(event) {
     return !((aCode > 70 && aCode < 77) || (aCode > 77 && aCode < 102) || (aCode > 102 && aCode < 109) || aCode > 109 || aCode < 70);
 }
 
+function sumWithPrecision(number, number2, factor) {
+    return ((number * factor + number2 * factor) / factor)
+}
+
+function subWithPrecision(number, number2, factor) {
+    return ((number * factor - number2 * factor) / factor)
+}
+
 // Function to signup
 async function signUp(evt) {
-        evt.preventDefault();
-        let email = document.querySelector('#signup-email').value;
-        let psw = document.querySelector('#signup-psw').value;
-        let psw2 = document.querySelector('#signup-psw2').value;
-        let fname = document.querySelector('#signup-fname').value;
-        let lname = document.querySelector('#signup-lname').value;
-        let age = document.querySelector('#signup-age').value;
-        let sex = document.querySelector('#signup-sex').value;
-        let weight = document.querySelector('#signup-weight').value;
-        let height = document.querySelector('#signup-height').value;
-        let activityLevel = document.querySelector('#signup-activity-lvl').value;
-        if (psw === psw2) {
-            let userData = await getData(`${baseUrl}newuser?email=${email}&psw=${psw}&fname=${fname}&lname=${lname}&age=${age}&sex=${sex}&weight=${weight}&height=${height}&activity_lvl=${activityLevel}`);
-            if (!userData.active) {
-                document.querySelector('#signup-error-message').innerHTML = 'Email already registered.';
-                document.querySelector('#signup-email').value = null
-            } else {
-                document.querySelector('#signup-modal').classList.add('hide');
-                document.querySelector('#login-modal').classList.remove('hide');
-                document.querySelector('#error-message').innerHTML = 'Sign up completed. Please login in.'
-            }
+    evt.preventDefault();
+    let email = document.querySelector('#signup-email').value;
+    let psw = document.querySelector('#signup-psw').value;
+    let psw2 = document.querySelector('#signup-psw2').value;
+    let fname = document.querySelector('#signup-fname').value;
+    let lname = document.querySelector('#signup-lname').value;
+    let age = document.querySelector('#signup-age').value;
+    let sex = document.querySelector('#signup-sex').value;
+    let weight = document.querySelector('#signup-weight').value;
+    let height = document.querySelector('#signup-height').value;
+    let activityLevel = document.querySelector('#signup-activity-lvl').value;
+    if (psw === psw2) {
+        let userData = await getData(`${baseUrl}newuser?email=${email}&psw=${psw}&fname=${fname}&lname=${lname}&age=${age}&sex=${sex}&weight=${weight}&height=${height}&activity_lvl=${activityLevel}`);
+        if (!userData.active) {
+            document.querySelector('#signup-error-message').innerHTML = 'Email already registered.';
+            document.querySelector('#signup-email').value = null
         } else {
-            document.querySelector('#signup-error-message').innerHTML = 'Passwords do not match.';
+            document.querySelector('#signup-modal').classList.add('hide');
+            document.querySelector('#login-modal').classList.remove('hide');
+            document.querySelector('#error-message').innerHTML = 'Sign up completed. Please login in.'
         }
+    } else {
+        document.querySelector('#signup-error-message').innerHTML = 'Passwords do not match.';
+    }
 }
 
 // Function to get all food items
@@ -63,8 +75,8 @@ async function getAllFoodItems() {
         let newLink = document.createElement('a');
         newLink.href = item[1];
         newLink.innerHTML = item[0];
-        newInput.type='number';
-        newInput.placeholder='Enter the amount';
+        newInput.type = 'number';
+        newInput.placeholder = 'Enter the amount';
         newDiv.classList.add('flex');
         newButton.value = item[1];
         newButton.innerHTML = 'Add';
@@ -84,9 +96,8 @@ function filterSearch() {
         let txtValue = item.textContent || item.innerHTML;
         if (txtValue.toUpperCase().indexOf(input) > -1) {
             item.style.display = '';
-        }
-        else {
-        item.style.display = 'none'
+        } else {
+            item.style.display = 'none'
         }
     }
 }
@@ -97,51 +108,101 @@ async function addEventsToButtons(target) {
     for (let button of buttons) {
         button.addEventListener('click', async function (evt) {
             evt.preventDefault();
+            if (document.querySelector(`#${mealTarget}`).getElementsByTagName('tr').length > 1) {
+                const tableTrs = document.querySelector(`#${mealTarget}`).getElementsByTagName('tr');
+                tableTrs[tableTrs.length - 1].remove()
+            }
             const foodId = button.value;
             const foodAmount = button.previousElementSibling.value;
             if (foodAmount === '' || foodAmount === '0') {
                 button.previousElementSibling.value = '';
-                button.previousElementSibling.placeholder='Please, enter the amount';
+                button.previousElementSibling.placeholder = 'Please, enter the amount';
                 return
             }
             button.style.display = 'none';
             button.previousElementSibling.style.display = 'none';
             const nutritionData = await getData(`${baseUrl}fooditem?food_id=${button.value}&amount=${button.previousElementSibling.value}`);
-            console.log(nutritionData);
             const targetTable = document.querySelector(`#${mealTarget}`);
-            const newTr = document.createElement('tr');
+            const targetTr = document.createElement('tr');
             let newTd = document.createElement('td');
-            newTd.innerHTML=nutritionData['name'];
-            newTr.appendChild(newTd);
+            newTd.innerHTML = nutritionData['name'];
+            targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML=nutritionData['carbs'];
-            newTr.appendChild(newTd);
+            newTd.innerHTML = nutritionData['carbs'];
+            targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML=nutritionData['fat'];
-            newTr.appendChild(newTd);
+            newTd.innerHTML = nutritionData['fat'];
+            targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML=nutritionData['protein'];
-            newTr.appendChild(newTd);
+            newTd.innerHTML = nutritionData['protein'];
+            targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML=nutritionData['energy'];
-            newTr.appendChild(newTd);
+            newTd.innerHTML = nutritionData['energy'];
+            targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML=button.value;
+            newTd.innerHTML = button.value;
             newTd.classList.add('hide');
-            newTr.appendChild(newTd);
+            targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML=`${button.previousElementSibling.value}g`;
-            newTr.appendChild(newTd);
+            newTd.innerHTML = `${button.previousElementSibling.value}g`;
+            targetTr.appendChild(newTd);
             newTd = document.createElement('td');
             const newButton = document.createElement('button');
             newButton.innerHTML = 'Delete'
             newButton.addEventListener('click', function (evt) {
                 evt.preventDefault();
-                newTr.remove()
+                if (document.querySelector(`#${mealTarget}`).getElementsByTagName('tr').length > 1) {
+                    const tableTrs = document.querySelector(`#${mealTarget}`).getElementsByTagName('tr');
+                    totalCarb = subWithPrecision(totalCarb, nutritionData['carbs'], 10);
+                    totalFat = subWithPrecision(totalFat, nutritionData['fat'], 10);
+                    totalProtein = subWithPrecision(totalProtein, nutritionData['protein'], 10);
+                    totalEnergy = subWithPrecision(totalEnergy, nutritionData['energy'], 10);
+                    const targetTr3 = document.createElement('tr');
+                    newTd = document.createElement('td');
+                    newTd.innerHTML = '<b>Total</b>';
+                    targetTr3.appendChild(newTd);
+                    newTd = document.createElement('td');
+                    newTd.innerHTML = totalCarb;
+                    targetTr3.appendChild(newTd);
+                    newTd = document.createElement('td');
+                    newTd.innerHTML = totalFat;
+                    targetTr3.appendChild(newTd);
+                    newTd = document.createElement('td');
+                    newTd.innerHTML = totalProtein;
+                    targetTr3.appendChild(newTd);
+                    newTd = document.createElement('td');
+                    newTd.innerHTML = totalEnergy;
+                    targetTr3.appendChild(newTd);
+                    tableTrs[tableTrs.length - 1].remove();
+                    targetTable.appendChild(targetTr3);
+                    targetTr.remove()
+                }
+                targetTr.remove()
             })
-            newTd.appendChild(newButton)
-            newTr.appendChild(newTd)
-            targetTable.appendChild(newTr)
+            newTd.appendChild(newButton);
+            targetTr.appendChild(newTd);
+            targetTable.appendChild(targetTr);
+            totalCarb = sumWithPrecision(totalCarb, nutritionData['carbs'], 10);
+            totalFat = sumWithPrecision(totalFat, nutritionData['fat'], 10);
+            totalProtein = sumWithPrecision(totalProtein, nutritionData['protein'], 10);
+            totalEnergy = sumWithPrecision(totalEnergy, nutritionData['energy'], 10);
+            const targetTr2 = document.createElement('tr');
+            newTd = document.createElement('td');
+            newTd.innerHTML = '<b>Total</b>';
+            targetTr2.appendChild(newTd);
+            newTd = document.createElement('td');
+            newTd.innerHTML = totalCarb;
+            targetTr2.appendChild(newTd);
+            newTd = document.createElement('td');
+            newTd.innerHTML = totalFat;
+            targetTr2.appendChild(newTd);
+            newTd = document.createElement('td');
+            newTd.innerHTML = totalProtein;
+            targetTr2.appendChild(newTd);
+            newTd = document.createElement('td');
+            newTd.innerHTML = totalEnergy;
+            targetTr2.appendChild(newTd);
+            targetTable.appendChild(targetTr2)
         })
     }
 }
@@ -154,8 +215,12 @@ async function addEventsTolinks() {
     for (let link of links) {
         link.addEventListener('click', function (evt) {
             evt.preventDefault();
-            for (let input of inputs) {input.style.display='none'}
-            for (let button of buttons) {button.style.display='none'}
+            for (let input of inputs) {
+                input.style.display = 'none'
+            }
+            for (let button of buttons) {
+                button.style.display = 'none'
+            }
             link.nextElementSibling.style.display = 'inline';
             link.nextElementSibling.nextElementSibling.style.display = 'inline'
         })

@@ -42,6 +42,7 @@ def newuser():
 def plan():
     return json.dumps(AllFoods(), default=lambda o: o.__dict__, indent=4)
 
+
 # http://127.0.0.1:5000/fooditem?food_id=${button.value}&amount=${button.previousElementSibling.value}
 @app.route('/fooditem')
 def food_item():
@@ -50,6 +51,7 @@ def food_item():
     amount = int(args.get('amount'))
     food = Food(food_id, amount)
     return json.dumps(food, default=lambda o: o.__dict__, indent=4)
+
 
 if __name__ == '__main__':
     app.run(use_reloader=True, host='127.0.0.1', port=5000)
