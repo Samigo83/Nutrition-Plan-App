@@ -37,7 +37,7 @@ class User:
             self.id = user[0]
             self.fname = user[1]
             self.lname = user[2]
-            self.name = f"{user[1]} {user[2]}"
+            self.name = f"{user[1]} {user[2]}".title()
             self.email = user[3]
             self.password = user[4]
             self.age = user[5]
