@@ -30,6 +30,10 @@
                 </div>
             </div>
             <div id="meals" class="flex hide">
+                <div id="plan-input-field" class="flex">
+                    <label for="plan-name"><b>Plan Name</b></label>
+                    <input id="plan-name" type="text" placeholder="Name of plan">
+                </div>
                 <div class="meal-item">
                     <h3>Breakfast</h3>
                     <table id="breakfast">
@@ -43,10 +47,17 @@
                             <td>Grams</td>
                             <td class="hide">delete button</td>
                         </tr>
+                        <tr id="breakfast-total">
+                            <td><b>Total</b></td>
+                            <td id="breakfast-carbs"></td>
+                            <td id="breakfast-fat"></td>
+                            <td id="breakfast-protein"></td>
+                            <td id="breakfast-energy"></td>
+                        </tr>
                     </table>
                     <div class="flex space-between color-greenish">
                         <button id="breakfast-edit-btn">Edit</button>
-                        <button id="breakfast-save-btn">Save</button>
+                        <button id="breakfast-reset-btn">Reset</button>
                     </div>
                 </div>
                 <div class="meal-item">
@@ -61,7 +72,18 @@
                             <td class="hide">id</td>
                             <td class="hide">amount</td>
                         </tr>
+                        <tr id="lunch-total">
+                            <td><b>Total</b></td>
+                            <td id="lunch-carbs"></td>
+                            <td id="lunch-fat"></td>
+                            <td id="lunch-protein"></td>
+                            <td id="lunch-energy"></td>
+                        </tr>
                     </table>
+                    <div class="flex space-between color-greenish">
+                        <button id="lunch-edit-btn">Edit</button>
+                        <button id="lunch-reset-btn">Reset</button>
+                    </div>
                 </div>
                 <div class="meal-item">
                     <h3>Dinner</h3>
@@ -75,7 +97,18 @@
                             <td class="hide">id</td>
                             <td class="hide">amount</td>
                         </tr>
+                        <tr id="dinner-total">
+                            <td><b>Total</b></td>
+                            <td id="dinner-carbs"></td>
+                            <td id="dinner-fat"></td>
+                            <td id="dinner-protein"></td>
+                            <td id="dinner-energy"></td>
+                        </tr>
                     </table>
+                    <div class="flex space-between color-greenish">
+                        <button id="dinner-edit-btn">Edit</button>
+                        <button id="dinner-reset-btn">Reset</button>
+                    </div>
                 </div>
                 <div class="meal-item">
                     <h3>Snack</h3>
@@ -89,7 +122,18 @@
                             <td class="hide">id</td>
                             <td class="hide">amount</td>
                         </tr>
+                        <tr id="snack-total">
+                            <td><b>Total</b></td>
+                            <td id="snack-carbs"></td>
+                            <td id="snack-fat"></td>
+                            <td id="snack-protein"></td>
+                            <td id="snack-energy"></td>
+                        </tr>
                     </table>
+                    <div class="flex space-between color-greenish">
+                        <button id="snack-edit-btn">Edit</button>
+                        <button id="snack-reset-btn">Reset</button>
+                    </div>
                 </div>
                 <div class="meal-item">
                     <h3>Supper</h3>
@@ -103,7 +147,18 @@
                             <td class="hide">id</td>
                             <td class="hide">amount</td>
                         </tr>
+                        <tr id="supper-total">
+                            <td><b>Total</b></td>
+                            <td id="supper-carbs"></td>
+                            <td id="supper-fat"></td>
+                            <td id="supper-protein"></td>
+                            <td id="supper-energy"></td>
+                        </tr>
                     </table>
+                    <div class="flex space-between color-greenish">
+                        <button id="supper-edit-btn">Edit</button>
+                        <button id="supper-reset-btn">Reset</button>
+                    </div>
                 </div>
             </div>
         </div>
