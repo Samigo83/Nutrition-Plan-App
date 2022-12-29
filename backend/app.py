@@ -52,6 +52,27 @@ def food_item():
     food = Food(food_id, amount)
     return json.dumps(food, default=lambda o: o.__dict__, indent=4)
 
+# http://127.0.0.1:5000/save?breakfast_ids=${breakfastIdArray}&breakfast_amount=${breakfastAmountarray}
+# &lunch_ids=${lunchIdArray}&lunch_amount=${lunchAmountarray}&dinner_ids=${dinnerIdArray}&
+# dinner_amount=${dinnerAmountarray}&snack_ids=${snackIdArray}&snack_amount=${snackAmountarray}
+# &supper_ids=${supperIdArray}&supper_amount=${supperAmountarray}`)
+@app.route('/save')
+def save():
+    args = request.args
+    breakfast_ids = args.get('breakfast_ids')
+    breakfast_amount = args.get('breakfast_amount')
+    lunch_ids = args.get('lunch_ids')
+    lunch_amount = args.get('lunch_amount')
+    dinner_ids = args.get('dinner_ids')
+    dinner_amount = args.get('dinner_amount')
+    snack_ids = args.get('snack_ids')
+    if snack_ids == '':
+        snack_ids = None
+    snack_amount = args.get('snack_amount')
+    supper_ids = args.get('supper_ids')
+    supper_amount = args.get('supper_amount')
+    print(breakfast_ids, breakfast_amount, lunch_ids, lunch_amount, dinner_ids, dinner_amount, snack_ids, snack_amount, supper_ids, supper_amount)
+    return json.dumps("'', 204", default=lambda o: o.__dict__, indent=4)
 
 if __name__ == '__main__':
     app.run(use_reloader=True, host='127.0.0.1', port=5000)

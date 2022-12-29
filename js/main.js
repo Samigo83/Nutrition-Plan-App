@@ -22,6 +22,12 @@ async function getData(url) {
     return data;
 }
 
+async function postData(url) {
+    fetch(url, {
+        method: 'POST'
+    });
+}
+
 // Function to check if input is number
 function checkNumber(event) {
     const aCode = event.which ? event.which : event.keyCode;
@@ -155,9 +161,11 @@ async function addEventsToButtons() {
             newTd = document.createElement('td');
             newTd.innerHTML = button.value;
             newTd.classList.add('hide');
+            newTd.classList.add(`${mealTarget}-id`);
             targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML = `${button.previousElementSibling.value}g`;
+            newTd.innerHTML = `${button.previousElementSibling.value}`;
+            newTd.classList.add(`${mealTarget}-amount`);
             targetTr.appendChild(newTd);
             newTd = document.createElement('td');
             const newButton = document.createElement('button');
@@ -349,6 +357,61 @@ document.querySelector('#signup-activity-lvl').addEventListener('keypress', func
 });
 document.querySelector('#signup-activity-lvl').addEventListener('click', function () {
     document.querySelector('#signup-error-message').innerHTML = '';
+});
+
+document.querySelector('#plan-save-btn').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    const breakfastIdArray = [];
+    const breakfastAmountarray = [];
+    const lunchIdArray = [];
+    const lunchAmountarray = [];
+    const dinnerIdArray = [];
+    const dinnerAmountarray = [];
+    const snackIdArray = [];
+    const snackAmountarray = [];
+    const supperIdArray = [];
+    const supperAmountarray = [];
+    const breakfastIds = document.getElementsByClassName('breakfast-id');
+    const breakfastAmounts = document.getElementsByClassName('breakfast-amount');
+    const lunchIds = document.getElementsByClassName('lunch-id');
+    const lunchAmounts = document.getElementsByClassName('lunch-amount');
+    const dinnerIds = document.getElementsByClassName('dinner-id');
+    const dinnerAmounts = document.getElementsByClassName('dinner-amount');
+    const snackIds = document.getElementsByClassName('snack-id');
+    const snackAmounts = document.getElementsByClassName('snack-amount');
+    const supperIds = document.getElementsByClassName('supper-id');
+    const supperAmounts = document.getElementsByClassName('supper-amount');
+    for (let id of breakfastIds) {
+        breakfastIdArray.push(id.innerHTML)
+    }
+    for (let amount of breakfastAmounts) {
+        breakfastAmountarray.push(amount.innerHTML)
+    }
+    for (let id of lunchIds) {
+        lunchIdArray.push(id.innerHTML)
+    }
+    for (let amount of lunchAmounts) {
+        lunchAmountarray.push(amount.innerHTML)
+    }
+    for (let id of dinnerIds) {
+        dinnerIdArray.push(id.innerHTML)
+    }
+    for (let amount of dinnerAmounts) {
+        dinnerAmountarray.push(amount.innerHTML)
+    }
+    for (let id of snackIds) {
+        snackIdArray.push(id.innerHTML)
+    }
+    for (let amount of snackAmounts) {
+        snackAmountarray.push(amount.innerHTML)
+    }
+    for (let id of supperIds) {
+        supperIdArray.push(id.innerHTML)
+    }
+    for (let amount of supperAmounts) {
+        supperAmountarray.push(amount.innerHTML)
+    }
+    getData(`${baseUrl}save?breakfast_ids=${breakfastIdArray}&breakfast_amount=${breakfastAmountarray}&lunch_ids=${lunchIdArray}&lunch_amount=${lunchAmountarray}&dinner_ids=${dinnerIdArray}&dinner_amount=${dinnerAmountarray}&snack_ids=${snackIdArray}&snack_amount=${snackAmountarray}&supper_ids=${supperIdArray}&supper_amount=${supperAmountarray}`)
 });
 
 

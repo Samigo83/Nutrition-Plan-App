@@ -85,6 +85,14 @@ button {
     padding: .5rem;
 }
 
+#plan-buttons {
+    width: 100%;
+    margin: 1rem;
+    background-color: #8cd97a;
+    border: 2px solid black;
+    border-radius: 6px;
+}
+
 #login-modal {
     position: absolute;
     width: 100%;
