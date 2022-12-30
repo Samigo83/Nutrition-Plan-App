@@ -3,10 +3,8 @@
 // Global variables
 const baseUrl = 'http://127.0.0.1:5000/';
 let mealTarget;
-let totalCarb = 0.0;
-let totalFat = 0.0;
-let totalProtein = 0.0;
-let totalEnergy = 0.0;
+
+let totalPlanValues = {'carb': 0.0, 'fat': 0.0, 'protein': 0.0, 'energy': 0.0};
 let breakfastValues = {'carb': 0.0, 'fat': 0.0, 'protein': 0.0, 'energy': 0.0};
 let lunchValues = {'carb': 0.0, 'fat': 0.0, 'protein': 0.0, 'energy': 0.0};
 let dinnerValues = {'carb': 0.0, 'fat': 0.0, 'protein': 0.0, 'energy': 0.0};
@@ -147,16 +145,16 @@ async function addEventsToButtons() {
             newTd.innerHTML = nutritionData['name'];
             targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML = nutritionData['carbs'];
+            newTd.innerHTML = nutritionData['total_carbs'];
             targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML = nutritionData['fat'];
+            newTd.innerHTML = nutritionData['total_fat'];
             targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML = nutritionData['protein'];
+            newTd.innerHTML = nutritionData['total_protein'];
             targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML = nutritionData['energy'];
+            newTd.innerHTML = nutritionData['total_energy'];
             targetTr.appendChild(newTd);
             newTd = document.createElement('td');
             newTd.innerHTML = button.value;
@@ -188,32 +186,40 @@ async function addEventsToButtons() {
                 } else {
                     mealTotalTarget = supperValues
                 }
-                totalCarb = subWithPrecision(totalCarb, nutritionData['carbs'], 10);
-                totalFat = subWithPrecision(totalFat, nutritionData['fat'], 10);
-                totalProtein = subWithPrecision(totalProtein, nutritionData['protein'], 10);
-                totalEnergy = subWithPrecision(totalEnergy, nutritionData['energy'], 10);
-                mealTotalTarget['carb'] = subWithPrecision(mealTotalTarget['carb'], nutritionData['carbs'], 10);
-                mealTotalTarget['fat'] = subWithPrecision(mealTotalTarget['fat'], nutritionData['fat'], 10);
-                mealTotalTarget['protein'] = subWithPrecision(mealTotalTarget['protein'], nutritionData['protein'], 10);
-                mealTotalTarget['energy'] = subWithPrecision(mealTotalTarget['energy'], nutritionData['energy'], 10);
+                totalPlanValues['carb'] = subWithPrecision(totalPlanValues['carb'], nutritionData['total_carbs'], 10);
+                totalPlanValues['fat'] = subWithPrecision(totalPlanValues['fat'], nutritionData['total_fat'], 10);
+                totalPlanValues['protein'] = subWithPrecision(totalPlanValues['protein'], nutritionData['total_protein'], 10);
+                totalPlanValues['energy'] = subWithPrecision(totalPlanValues['energy'], nutritionData['total_energy'], 10);
+                mealTotalTarget['carb'] = subWithPrecision(mealTotalTarget['carb'], nutritionData['total_carbs'], 10);
+                mealTotalTarget['fat'] = subWithPrecision(mealTotalTarget['fat'], nutritionData['total_fat'], 10);
+                mealTotalTarget['protein'] = subWithPrecision(mealTotalTarget['protein'], nutritionData['total_protein'], 10);
+                mealTotalTarget['energy'] = subWithPrecision(mealTotalTarget['energy'], nutritionData['total_energy'], 10);
                 document.querySelector(`#${mealTarget}-carbs`).innerHTML = mealTotalTarget['carb'];
                 document.querySelector(`#${mealTarget}-fat`).innerHTML = mealTotalTarget['fat'];
                 document.querySelector(`#${mealTarget}-protein`).innerHTML = mealTotalTarget['protein'];
                 document.querySelector(`#${mealTarget}-energy`).innerHTML = mealTotalTarget['energy'];
+                document.querySelector(`#plan-carbs`).innerHTML = totalPlanValues['carb'];
+                document.querySelector(`#plan-fat`).innerHTML = totalPlanValues['fat'];
+                document.querySelector(`#plan-protein`).innerHTML = totalPlanValues['protein'];
+                document.querySelector(`#plan-energy`).innerHTML = totalPlanValues['energy'];
                 targetTr.remove()
             });
-            totalCarb = sumWithPrecision(totalCarb, nutritionData['carbs'], 10);
-            totalFat = sumWithPrecision(totalFat, nutritionData['fat'], 10);
-            totalProtein = sumWithPrecision(totalProtein, nutritionData['protein'], 10);
-            totalEnergy = sumWithPrecision(totalEnergy, nutritionData['energy'], 10);
-            mealTotalTarget['carb'] = sumWithPrecision(mealTotalTarget['carb'], nutritionData['carbs'], 10);
-            mealTotalTarget['fat'] = sumWithPrecision(mealTotalTarget['fat'], nutritionData['fat'], 10);
-            mealTotalTarget['protein'] = sumWithPrecision(mealTotalTarget['protein'], nutritionData['protein'], 10);
-            mealTotalTarget['energy'] = sumWithPrecision(mealTotalTarget['energy'], nutritionData['energy'], 10);
+            totalPlanValues['carb'] = sumWithPrecision(totalPlanValues['carb'], nutritionData['total_carbs'], 10);
+            totalPlanValues['fat'] = sumWithPrecision(totalPlanValues['fat'], nutritionData['total_fat'], 10);
+            totalPlanValues['protein'] = sumWithPrecision(totalPlanValues['protein'], nutritionData['total_protein'], 10);
+            totalPlanValues['energy'] = sumWithPrecision(totalPlanValues['energy'], nutritionData['total_energy'], 10);
+            mealTotalTarget['carb'] = sumWithPrecision(mealTotalTarget['carb'], nutritionData['total_carbs'], 10);
+            mealTotalTarget['fat'] = sumWithPrecision(mealTotalTarget['fat'], nutritionData['total_fat'], 10);
+            mealTotalTarget['protein'] = sumWithPrecision(mealTotalTarget['protein'], nutritionData['total_protein'], 10);
+            mealTotalTarget['energy'] = sumWithPrecision(mealTotalTarget['energy'], nutritionData['total_energy'], 10);
             document.querySelector(`#${mealTarget}-carbs`).innerHTML = mealTotalTarget['carb'];
             document.querySelector(`#${mealTarget}-fat`).innerHTML = mealTotalTarget['fat'];
             document.querySelector(`#${mealTarget}-protein`).innerHTML = mealTotalTarget['protein'];
             document.querySelector(`#${mealTarget}-energy`).innerHTML = mealTotalTarget['energy'];
+            document.querySelector(`#plan-carbs`).innerHTML = totalPlanValues['carb'];
+            document.querySelector(`#plan-fat`).innerHTML = totalPlanValues['fat'];
+            document.querySelector(`#plan-protein`).innerHTML = totalPlanValues['protein'];
+            document.querySelector(`#plan-energy`).innerHTML = totalPlanValues['energy'];
         })
     }
 }
@@ -359,18 +365,18 @@ document.querySelector('#signup-activity-lvl').addEventListener('click', functio
     document.querySelector('#signup-error-message').innerHTML = '';
 });
 
-document.querySelector('#plan-save-btn').addEventListener('click', function (evt) {
+document.querySelector('#plan-save-btn').addEventListener('click', async function (evt) {
     evt.preventDefault();
-    const breakfastIdArray = [];
-    const breakfastAmountarray = [];
-    const lunchIdArray = [];
-    const lunchAmountarray = [];
-    const dinnerIdArray = [];
-    const dinnerAmountarray = [];
-    const snackIdArray = [];
-    const snackAmountarray = [];
-    const supperIdArray = [];
-    const supperAmountarray = [];
+    let breakfastIdArray = [];
+    let breakfastAmountarray = [];
+    let lunchIdArray = [];
+    let lunchAmountarray = [];
+    let dinnerIdArray = [];
+    let dinnerAmountarray = [];
+    let snackIdArray = [];
+    let snackAmountarray = [];
+    let supperIdArray = [];
+    let supperAmountarray = [];
     const breakfastIds = document.getElementsByClassName('breakfast-id');
     const breakfastAmounts = document.getElementsByClassName('breakfast-amount');
     const lunchIds = document.getElementsByClassName('lunch-id');
@@ -381,37 +387,87 @@ document.querySelector('#plan-save-btn').addEventListener('click', function (evt
     const snackAmounts = document.getElementsByClassName('snack-amount');
     const supperIds = document.getElementsByClassName('supper-id');
     const supperAmounts = document.getElementsByClassName('supper-amount');
-    for (let id of breakfastIds) {
-        breakfastIdArray.push(id.innerHTML)
+    if (breakfastIds.length > 0) {
+        for (let id of breakfastIds) {
+            breakfastIdArray.push(id.innerHTML)
+        }
+    } else {
+        breakfastIdArray = 'None'
     }
-    for (let amount of breakfastAmounts) {
-        breakfastAmountarray.push(amount.innerHTML)
+
+    if (breakfastAmounts.length > 0) {
+        for (let amount of breakfastAmounts) {
+            breakfastAmountarray.push(amount.innerHTML)
+        }
+    } else {
+        breakfastAmountarray = 'None'
     }
-    for (let id of lunchIds) {
-        lunchIdArray.push(id.innerHTML)
+
+    if (lunchIds.length > 0) {
+        for (let id of lunchIds) {
+            lunchIdArray.push(id.innerHTML)
+        }
+    } else {
+        lunchIdArray = 'None'
     }
-    for (let amount of lunchAmounts) {
-        lunchAmountarray.push(amount.innerHTML)
+
+    if (lunchAmounts.length > 0) {
+        for (let amount of lunchAmounts) {
+            lunchAmountarray.push(amount.innerHTML)
+        }
+    } else {
+        lunchAmountarray = 'None'
     }
-    for (let id of dinnerIds) {
-        dinnerIdArray.push(id.innerHTML)
+
+    if (dinnerIds.length > 0) {
+        for (let id of dinnerIds) {
+            dinnerIdArray.push(id.innerHTML)
+        }
+    } else {
+        dinnerIdArray = 'None'
     }
-    for (let amount of dinnerAmounts) {
-        dinnerAmountarray.push(amount.innerHTML)
+
+    if (dinnerAmounts.length > 0) {
+        for (let amount of dinnerAmounts) {
+            dinnerAmountarray.push(amount.innerHTML)
+        }
+    } else {
+        dinnerAmountarray = 'None'
     }
-    for (let id of snackIds) {
-        snackIdArray.push(id.innerHTML)
+
+    if (snackIds.length > 0) {
+        for (let id of snackIds) {
+            snackIdArray.push(id.innerHTML)
+        }
+    } else {
+        snackIdArray = 'None'
     }
-    for (let amount of snackAmounts) {
-        snackAmountarray.push(amount.innerHTML)
+
+    if (snackAmounts.length > 0) {
+        for (let amount of snackAmounts) {
+            snackAmountarray.push(amount.innerHTML)
+        }
+    } else {
+        snackAmountarray = 'None'
     }
-    for (let id of supperIds) {
-        supperIdArray.push(id.innerHTML)
+
+    if (supperIds.length > 0) {
+        for (let id of supperIds) {
+            supperIdArray.push(id.innerHTML)
+        }
+    } else {
+        supperIdArray = 'None'
     }
-    for (let amount of supperAmounts) {
-        supperAmountarray.push(amount.innerHTML)
+
+    if (supperAmounts.length > 0) {
+        for (let amount of supperAmounts) {
+            supperAmountarray.push(amount.innerHTML)
+        }
+    } else {
+        supperAmountarray = 'None'
     }
-    getData(`${baseUrl}save?breakfast_ids=${breakfastIdArray}&breakfast_amount=${breakfastAmountarray}&lunch_ids=${lunchIdArray}&lunch_amount=${lunchAmountarray}&dinner_ids=${dinnerIdArray}&dinner_amount=${dinnerAmountarray}&snack_ids=${snackIdArray}&snack_amount=${snackAmountarray}&supper_ids=${supperIdArray}&supper_amount=${supperAmountarray}`)
+    const saveData = await getData(`${baseUrl}save?breakfast_ids=${breakfastIdArray}&breakfast_amount=${breakfastAmountarray}&lunch_ids=${lunchIdArray}&lunch_amount=${lunchAmountarray}&dinner_ids=${dinnerIdArray}&dinner_amount=${dinnerAmountarray}&snack_ids=${snackIdArray}&snack_amount=${snackAmountarray}&supper_ids=${supperIdArray}&supper_amount=${supperAmountarray}`);
+    console.log(saveData)
 });
 
 
