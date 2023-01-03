@@ -11,31 +11,22 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-# http://127.0.0.1:5000/login?username=x&password=x
-@app.route('/login')
+# http://127.0.0.1:5000/login
+@app.route('/login', methods=['POST'])
 def login():
-    args = request.args
-    user = args.get('username')
-    psw = args.get('password')
-    user = User(user, psw)
+    json_data = request.get_json()
+    user = User(json_data['username'], json_data['psw'])
     return json.dumps(user, default=lambda o: o.__dict__, indent=4)
 
 
 # http://127.0.0.1:5000/newuser?email=${email}&psw=${psw}&fname=${fname}&lname=${lname}&age=${age}&sex=${sex}
 # &weight=${weight}&height=${height}&activity_lvl=${activityLevel}
-@app.route('/newuser')
+@app.route('/newuser', methods=['POST'])
 def newuser():
-    args = request.args
-    email = args.get('email')
-    psw = args.get('psw')
-    fname = args.get('fname')
-    lname = args.get('lname')
-    age = int(args.get('age'))
-    sex = args.get('sex')
-    weight = int(args.get('weight'))
-    height = int(args.get('height'))
-    activity_lvl = int(args.get('activity_lvl'))
-    user = NewUser(fname, lname, email, psw, age, sex, weight, height, activity_lvl)
+    json_data = request.get_json()
+    user = NewUser(json_data['fname'].lower(), json_data['lname'].lower(), json_data['email'].lower(),
+                   json_data['psw'].lower(), int(json_data['age']), json_data['sex'], int(json_data['weight']),
+                                                 int(json_data['height']), int(json_data['activity_lvl']))
     return json.dumps(user, default=lambda o: o.__dict__, indent=4)
 
 
@@ -53,13 +44,17 @@ def food_item():
     food = Food(food_id, amount)
     return json.dumps(food, default=lambda o: o.__dict__, indent=4)
 
-# http://127.0.0.1:5000/save?breakfast_ids=${breakfastIdArray}&breakfast_amount=${breakfastAmountarray}
+
+# http://127.0.0.1:5000/save?user_id=${userId}&plan_name=${planName}&breakfast_ids=${breakfastIdArray}&breakfast_amount=${breakfastAmountarray}
 # &lunch_ids=${lunchIdArray}&lunch_amount=${lunchAmountarray}&dinner_ids=${dinnerIdArray}&
 # dinner_amount=${dinnerAmountarray}&snack_ids=${snackIdArray}&snack_amount=${snackAmountarray}
 # &supper_ids=${supperIdArray}&supper_amount=${supperAmountarray}`)
 @app.route('/save')
 def save():
     args = request.args
+
+    plan_name = args.get('plan_name').lower()
+    user_id = args.get('user_id')
 
     breakfast_ids = args.get('breakfast_ids')
     if breakfast_ids != 'None':
@@ -121,10 +116,9 @@ def save():
     else:
         supper = None
 
-    plan = {'breakfast': breakfast, 'lunch': lunch, 'dinner': dinner, 'snack': snack, 'supper': supper}
-    user_plan = Plan(**plan)
-    data = json.dumps(user_plan, default=lambda o: o.__dict__, indent=4)
-    return data
+    plan = {'user_id': user_id, 'plan_name': plan_name, 'breakfast': breakfast, 'lunch': lunch, 'dinner': dinner, 'snack': snack, 'supper': supper}
+    save_status = Plan(**plan).save_plan(**plan)
+    return json.dumps(save_status, default=lambda o: o.__dict__, indent=4)
 
 
 if __name__ == '__main__':

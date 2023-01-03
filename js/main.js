@@ -1,9 +1,9 @@
 'use strict';
 
 // Global variables
+let userId;
 const baseUrl = 'http://127.0.0.1:5000/';
 let mealTarget;
-
 let totalPlanValues = {'carb': 0.0, 'fat': 0.0, 'protein': 0.0, 'energy': 0.0};
 let breakfastValues = {'carb': 0.0, 'fat': 0.0, 'protein': 0.0, 'energy': 0.0};
 let lunchValues = {'carb': 0.0, 'fat': 0.0, 'protein': 0.0, 'energy': 0.0};
@@ -20,10 +20,17 @@ async function getData(url) {
     return data;
 }
 
-async function postData(url) {
-    fetch(url, {
-        method: 'POST'
-    });
+async function postData(url, payload) {
+    return fetch((url), {
+            method: "POST",
+            body: JSON.stringify(
+              payload
+            ),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => response.json())
 }
 
 // Function to check if input is number
@@ -60,8 +67,10 @@ async function signUp(evt) {
     let height = document.querySelector('#signup-height').value;
     let activityLevel = document.querySelector('#signup-activity-lvl').value;
     if (psw === psw2) {
-        let userData = await getData(`${baseUrl}newuser?email=${email}&psw=${psw}&fname=${fname}&lname=${lname}&age=${age}&sex=${sex}&weight=${weight}&height=${height}&activity_lvl=${activityLevel}`);
-        if (!userData.active) {
+        const payload = {'fname': fname, 'lname': lname, 'email': email, 'psw': psw, 'age': age, 'sex': sex, 'weight': weight, 'height': height, 'activity_lvl': activityLevel};
+        let signUpData = await postData(`${baseUrl}newuser`, payload);
+        console.log(signUpData);
+        if (!signUpData.active) {
             document.querySelector('#signup-error-message').innerHTML = 'Email already registered.';
             document.querySelector('#signup-email').value = null
         } else {
@@ -244,19 +253,24 @@ async function addEventsTolinks() {
     }
 }
 
-// Main program
+// Event listeners
+
+
 document.querySelector('#login-form').addEventListener('submit', async function (evt) {
     evt.preventDefault();
     await getAllFoodItems();
     await addEventsTolinks();
     await addEventsToButtons();
-    let userName = document.querySelector('#uname').value;
-    let password = document.querySelector('#psw').value;
-    let userData = await getData(`${baseUrl}login?username=${userName}&password=${password}`);
+    const userName = document.querySelector('#uname').value;
+    const password = document.querySelector('#psw').value;
+    const payload = {'username': userName, 'psw': password};
+    const userData = await postData(`${baseUrl}login`, payload);
+//    let userData = await getData(`${baseUrl}login?username=${userName}&password=${password}`);
     if (!userData.active) {
         document.querySelector('#error-message').innerHTML = 'Email not found or wrong password.'
     } else {
         console.log(userData);
+        userId = userData['id'];
         document.querySelector('#login-modal').classList.add('hide');
         document.querySelector('#buttons').classList.remove('hide');
         document.querySelector('#username').innerHTML = `${userData.name}`;
@@ -264,9 +278,27 @@ document.querySelector('#login-form').addEventListener('submit', async function 
     }
 });
 
-// Event listeners
-
 document.querySelector('#signup-form').addEventListener('submit', signUp);
+
+document.querySelector('#plan-name').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    document.querySelector('#save-error-message').classList.add('hide')
+});
+
+document.querySelector('#plan-name-ok-btn').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    let planName = document.querySelector('#plan-name').value;
+    document.querySelector('#plan-name-label').innerHTML = `<b>Plan name: ${planName}</b>`;
+    document.querySelector('#plan-name').classList.add('hide');
+    document.querySelector('#plan-name-ok-btn').classList.add('hide');
+});
+
+document.querySelector('#plan-name-edit-btn').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    document.querySelector('#plan-name').classList.toggle('hide');
+    document.querySelector('#plan-name-ok-btn').classList.toggle('hide');
+    document.querySelector('#save-error-message').classList.add('hide');
+});
 
 document.querySelector('#breakfast-edit-btn').addEventListener('click', function () {
     mealTarget = 'breakfast';
@@ -466,8 +498,21 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         supperAmountarray = 'None'
     }
-    const saveData = await getData(`${baseUrl}save?breakfast_ids=${breakfastIdArray}&breakfast_amount=${breakfastAmountarray}&lunch_ids=${lunchIdArray}&lunch_amount=${lunchAmountarray}&dinner_ids=${dinnerIdArray}&dinner_amount=${dinnerAmountarray}&snack_ids=${snackIdArray}&snack_amount=${snackAmountarray}&supper_ids=${supperIdArray}&supper_amount=${supperAmountarray}`);
-    console.log(saveData)
+    const planLabel = document.querySelector('#plan-name-label');
+    const planName = document.querySelector('#plan-name').value;
+    if (planLabel.innerHTML === '<b>Plan name</b>') {
+        document.querySelector('#save-error-message').innerHTML = 'Plan name is required';
+        document.querySelector('#save-error-message').classList.remove('hide');
+        document.querySelector('#page-header').scrollIntoView({behavior: 'smooth'});
+        return
+    }
+    const saveStatus = await getData(`${baseUrl}save?user_id=${userId}&plan_name=${planName}&breakfast_ids=${breakfastIdArray}&breakfast_amount=${breakfastAmountarray}&lunch_ids=${lunchIdArray}&lunch_amount=${lunchAmountarray}&dinner_ids=${dinnerIdArray}&dinner_amount=${dinnerAmountarray}&snack_ids=${snackIdArray}&snack_amount=${snackAmountarray}&supper_ids=${supperIdArray}&supper_amount=${supperAmountarray}`);
+    console.log(saveStatus);
+    if (!saveStatus) {
+        document.querySelector('#save-error-message').innerHTML = 'Plan name is already taken';
+        document.querySelector('#save-error-message').classList.remove('hide');
+        document.querySelector('#page-header').scrollIntoView({behavior: 'smooth'})
+    }
 });
 
 

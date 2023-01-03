@@ -11,4 +11,5 @@ connection = mysql.connector.connect(
     user=os.environ.get('DB_USER'),
     password=os.environ.get('DB_PASS'),
     autocommit=True,
+    buffered=True
     )

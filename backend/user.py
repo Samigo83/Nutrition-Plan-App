@@ -33,13 +33,12 @@ class User:
         query_cursor = connection.cursor()
         query_cursor.execute(sql)
         user = query_cursor.fetchone()
-        if query_cursor.rowcount > 0 and email.upper() == user[3].upper() and password.upper() == user[4].upper():
+        if query_cursor.rowcount > 0 and email.lower() == user[3].lower() and password.lower() == user[4].lower():
             self.id = user[0]
             self.fname = user[1]
             self.lname = user[2]
             self.name = f"{user[1]} {user[2]}".title()
             self.email = user[3]
-            self.password = user[4]
             self.age = user[5]
             self.sex = user[6]
             self.weight = user[7]
@@ -73,7 +72,7 @@ class User:
 
     def update_user(self, fname, lname, email, password, age, sex, weight, height, activity_lvl):
         sql = f"UPDATE users SET fname = '{fname}', lname = '{lname}', email = '{email}', " \
-                   f"password = '{password}', age = {age}, sex = '{sex}', weight = '{weight}', height = '{height}', " \
+                   f"password = '{password}', age = '{age}', sex = '{sex}', weight = '{weight}', height = '{height}', " \
                    f"activity_lvl = {activity_lvl} WHERE id = {self.id}"
         query_cursor = connection.cursor()
         query_cursor.execute(sql)
@@ -86,8 +85,5 @@ class User:
 
 
 
-# self, fname, lname, email, password, age, sex, weight, height, activity_lvl
-#NewUser("Sami", "Paananen", "sami.paananen@gmail.com", "salasana", 39, "M", 89, 173, 3)
-#User("sami.paananen@gmail.com", "salasana")
-#User("sami.paananen@gmail.com", "salasana").update_user("Sami", "Paananen", "sami.paananen@gmail.com", "salasana", 39, "M", 89, 173, 4)
-#print(User("sami.paananen@gmail.com", "salasana").total_calories)
+if __name__ == '__main__':
+    pass

@@ -30,9 +30,14 @@
                 </div>
             </div>
             <div id="meals" class="flex hide">
-                <div id="plan-input-field" class="flex">
-                    <label for="plan-name"><b>Plan name</b></label>
+                <div id="plan-name-div" class="flex center">
+                    <label id="plan-name-label" for="plan-name"><b>Plan name</b></label>
                     <input id="plan-name" type="text" placeholder="Name of plan">
+                    <div id="plan-name-buttons" class="flex space-between">
+                        <button id="plan-name-ok-btn">OK</button>
+                        <button id="plan-name-edit-btn">edit</button>
+                    </div>
+                    <p id="save-error-message" class="center hide"></p>
                 </div>
                 <div class="meal-item">
                     <h3>Breakfast</h3>
@@ -160,7 +165,7 @@
                         <button id="supper-reset-btn">Reset</button>
                     </div>
                 </div>
-                <table>
+                <table id="plan-total-table">
                     <tr id="plan-total">
                         <td><b>Total</b></td>
                         <td id="plan-carbs"></td>
@@ -231,7 +236,7 @@
                 </div>
             </form>
             <div class="flex center">
-                <button id="signup-signup-btn" type="submit">Sign up</button>
+                <button id="signup-signup-btn" type="submit" form="signup-form">Sign up</button>
                 <button id="signup-cancel-btn" type="button">Cancel</button>
             </div>
         </div>

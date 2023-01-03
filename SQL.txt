@@ -67,3 +67,57 @@ food.foodid = 153 and component.eufdname = 'ENERC';
 
 USER TABLE:
 
+CREATE TABLE user_plans(
+    id int not null auto_increment,
+    plan_name varchar(30),
+    user_id int,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id));
+
+CREATE TABLE plan_br(
+    plan_id int,
+    br_id int,
+    br_amount int,
+    FOREIGN KEY (plan_id) REFERENCES user_plans(id));
+
+CREATE TABLE plan_lnc(
+    plan_id int,
+    lnc_id int,
+    lnc_amount int,
+    FOREIGN KEY (plan_id) REFERENCES user_plans(id));
+
+CREATE TABLE plan_din(
+    plan_id int,
+    din_id int,
+    din_amount int,
+    FOREIGN KEY (plan_id) REFERENCES user_plans(id));
+
+CREATE TABLE plan_snc(
+    plan_id int,
+    snc_id int,
+    snc_amount int,
+    FOREIGN KEY (plan_id) REFERENCES user_plans(id));
+
+CREATE TABLE plan_sup(
+    plan_id int,
+    sup_id int,
+    sup_amount int,
+    FOREIGN KEY (plan_id) REFERENCES user_plans(id));
+
+INSERT INTO user_plans (plan_name, user_id)
+VALUES ('Dietti', 1);
+
+INSERT INTO plan_br (plan_id, br_id, br_amount)
+VALUES (1, 6, 143);
+
+SELECT br_id, br_amount FROM users, user_plans, plan_br WHERE users.id = user_plans.user_id AND
+user_plans.id = plan_br.plan_id AND users.id = 1;
+
+DELETE user_plans WHERE users.id = 1;
+
+INSERT INTO plan_br (plan_id, br_id, br_amount) VALUES (1, 2, 3)
+SELECT lnc_id, lnc_amount FROM users, user_plans, plan_lnc WHERE users.id = user_plans.user_id AND user_plans.id = plan_lnc.plan_id AND user_plans.id = "1"
+
+
+
+
