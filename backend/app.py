@@ -1,8 +1,8 @@
 from flask import Flask, request
 from flask_cors import CORS
-from user import NewUser, User
+from user import *
 from food import Food, AllFoods
-from plan import Plan
+from plan import *
 import json
 
 app = Flask(__name__)
@@ -26,8 +26,18 @@ def newuser():
     json_data = request.get_json()
     user = NewUser(json_data['fname'].lower(), json_data['lname'].lower(), json_data['email'].lower(),
                    json_data['psw'].lower(), int(json_data['age']), json_data['sex'], int(json_data['weight']),
-                                                 int(json_data['height']), int(json_data['activity_lvl']))
+                   int(json_data['height']), int(json_data['activity_lvl']))
     return json.dumps(user, default=lambda o: o.__dict__, indent=4)
+
+
+@app.route('/update', methods={'POST'})
+def update():
+    json_data = request.get_json()
+    update_user(int(json_data['id']), (json_data['age']), json_data['sex'], int(json_data['weight']),
+                int(json_data['height']), int(json_data['activity_lvl']))
+    total_calories = count_calories(json_data['sex'], int(json_data['weight']), int(json_data['height']),
+                                    int(json_data['age']), int(json_data['activity_lvl']))
+    return json.dumps(total_calories, default=lambda o: o.__dict__, indent=4)
 
 
 @app.route('/login/plan')
@@ -91,7 +101,7 @@ def save():
             dinner['values'].append(value)
     else:
         dinner = None
-        
+
     snack_ids = args.get('snack_ids')
     if snack_ids != 'None':
         snack_ids = [int(i) for i in snack_ids.split(',')]
@@ -103,9 +113,9 @@ def save():
             snack['values'].append(value)
     else:
         snack = None
-        
+
     supper_ids = args.get('supper_ids')
-    if  supper_ids != 'None':
+    if supper_ids != 'None':
         supper_ids = [int(i) for i in supper_ids.split(',')]
         supper_amount = args.get('supper_amount')
         supper_amount = [int(i) for i in supper_amount.split(',')]
@@ -116,9 +126,21 @@ def save():
     else:
         supper = None
 
-    plan = {'user_id': user_id, 'plan_name': plan_name, 'breakfast': breakfast, 'lunch': lunch, 'dinner': dinner, 'snack': snack, 'supper': supper}
-    save_status = Plan(**plan).save_plan(**plan)
+    plan = {'user_id': user_id, 'plan_name': plan_name, 'breakfast': breakfast, 'lunch': lunch, 'dinner': dinner,
+            'snack': snack, 'supper': supper}
+    save_status = save_plan(**plan)
     return json.dumps(save_status, default=lambda o: o.__dict__, indent=4)
+
+
+# http://127.0.0.1:5000/save?user_id=${userId}&plan_name=${planName}
+@app.route('/plan/get')
+def get():
+    args = request.args
+
+    plan_name = args.get('plan_name').lower()
+    user_id = args.get('user_id')
+    plan = get_plan(user_id, plan_name)
+    return json.dumps(plan, default=lambda o: o.__dict__, indent=4)
 
 
 if __name__ == '__main__':

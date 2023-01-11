@@ -44,45 +44,56 @@ class User:
             self.weight = user[7]
             self.height = user[8]
             self.activity_lvl = user[9]
+            self.plans = []
             self.active = True
-            if self.sex == "M":
-                self.total_calories = int(10 * self.weight + 6.25 * self.height - 5 * self.age + 5)
-                if self.activity_lvl > 0:
-                    if self.activity_lvl == 1:
-                        self.total_calories += 400
-                    elif self.activity_lvl == 2:
-                        self.total_calories += 800
-                    elif self.activity_lvl == 3:
-                        self.total_calories += 1200
-                    else:
-                        self.total_calories += 1600
-            else:
-                self.total_calories = int(10 * self.weight + 6.25 * self.height - 5 * self.age - 161)
-                if self.activity_lvl > 0:
-                    if self.activity_lvl == 1:
-                        self.total_calories += 400
-                    elif self.activity_lvl == 2:
-                        self.total_calories += 800
-                    elif self.activity_lvl == 3:
-                        self.total_calories += 1200
-                    else:
-                        self.total_calories += 1600
+            self.total_calories = count_calories(self.sex, self.weight, self.height, self.age, self. activity_lvl)
+
+            sql = f"SELECT plan_name FROM user_plans WHERE {self.id}"
+            query_cursor = connection.cursor()
+            query_cursor.execute(sql)
+            if query_cursor.rowcount > 0:
+                plans = query_cursor.fetchall()
+                for plan in plans:
+                    self.plans.append(plan)
         else:
             self.active = False
 
-    def update_user(self, fname, lname, email, password, age, sex, weight, height, activity_lvl):
-        sql = f"UPDATE users SET fname = '{fname}', lname = '{lname}', email = '{email}', " \
-                   f"password = '{password}', age = '{age}', sex = '{sex}', weight = '{weight}', height = '{height}', " \
-                   f"activity_lvl = {activity_lvl} WHERE id = {self.id}"
-        query_cursor = connection.cursor()
-        query_cursor.execute(sql)
 
-    def delete_user(self):
-        sql = f"DELETE FROM users where id = '{self.id}'"
-        query_cursor = connection.cursor()
-        query_cursor.execute(sql)
+def update_user(id, age, sex, weight, height, activity_lvl):
+    sql = f"UPDATE users SET age = {age}, sex = '{sex}', weight = {weight}, height = {height}, " \
+               f"activity_lvl = {activity_lvl} WHERE id = {id}"
+    query_cursor = connection.cursor()
+    query_cursor.execute(sql)
 
+def delete_user(id):
+    sql = f"DELETE FROM users where id = '{id}'"
+    query_cursor = connection.cursor()
+    query_cursor.execute(sql)
 
+def count_calories(sex, weight, height, age, activity_lvl):
+    if sex == "m":
+        total_calories = int(10 * weight + 6.25 * height - 5 * age + 5)
+        if activity_lvl > 0:
+            if activity_lvl == 1:
+                total_calories += 400
+            elif activity_lvl == 2:
+                total_calories += 800
+            elif activity_lvl == 3:
+                total_calories += 1200
+            else:
+                total_calories += 1600
+    else:
+        total_calories = int(10 * weight + 6.25 * height - 5 * age - 161)
+        if activity_lvl > 0:
+            if activity_lvl == 1:
+                total_calories += 400
+            elif activity_lvl == 2:
+                total_calories += 800
+            elif activity_lvl == 3:
+                total_calories += 1200
+            else:
+                total_calories += 1600
+    return total_calories
 
 
 if __name__ == '__main__':

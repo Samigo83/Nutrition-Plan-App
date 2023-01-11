@@ -11,6 +11,8 @@ class Food:
         query_cursor.execute(sql)
         food = query_cursor.fetchall()
         self.name = food[0][0]
+        self.id = food_id
+        self.amount = amount
         self.energy = round(float(food[1][1].replace(',', '.')) * 0.2390,  1)
         self.fat = round(float(food[2][1].replace(',', '.')),  1)
         self.carbs = round(float(food[0][1].replace(',', '.')),  1)

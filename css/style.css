@@ -16,13 +16,19 @@ button {
     border-radius: 4px;
 }
 
+#container {
+    height: auto;
+}
+
 #buttons {
     background-color: #a3d7a2;
+    align-items: center;
     padding: 1rem;
     margin: 0;
 }
 
 #page-content {
+    height: inherit;
     position: relative;
     background-color: #fdfffd;
     flex-wrap: wrap;
@@ -34,13 +40,36 @@ button {
 }
 
 #plan {
+    height: inherit;
     position: relative;
     width: 100%;
 }
 
 #dropdown {
+    max-height: 1400px;
     position: relative;
     width: 40%;
+    overflow-y: auto;
+}
+
+#user-plans {
+    position: relative;
+    margin: 0;
+}
+
+#user-plan-buttons {
+    position: relative;
+    z-index: 1;
+}
+
+#user-plans-content {
+    position: absolute;
+    background-color: transparent;
+    z-index: 1;
+}
+
+#user-plans-content button {
+    margin: 0;
 }
 
 #plan-name-div {
@@ -68,17 +97,18 @@ button {
 
 #meals {
     width: 100%;
+    height: inherit;
     padding: .5rem;
     flex-wrap: wrap;
-    height: fit-content;
     justify-content: space-between;
 }
 
 .meal-item {
     width: 100%;
+    height: fit-content;
     margin: 1rem;
     border: 2px solid black;
-    border-radius: 6px;
+    border-radius: 6px 6px 0 0;
     box-sizing: border-box;
 }
 
@@ -129,7 +159,8 @@ button {
 
 #signup-modal {
     position: absolute;
-    width: 100%;
+    width: 50%;
+    margin: auto;
     background-color: #deffd7;
 }
 
@@ -145,9 +176,16 @@ button {
     color: #e53943;
 }
 
+#user-main-info {
+    width: 50%;
+}
+
+#user-extra-info {
+    width: 50%;
+}
+
 .signup-item {
     display: flex;
-    width: calc(100% / 3 - 6 * 2rem);
     margin: 2rem;
     flex-wrap: wrap;
     text-align: center;
@@ -185,20 +223,24 @@ button {
 }
 
 .drop-down-content a {
+    width: 50%;
     color: black;
     margin: .5rem;
+    font-size: .9rem;
     padding: 6px 8px;
     text-decoration: none;
     display: inline;
 }
 
 #food-dropdown input {
+    width: 25%;
     margin: auto .5rem auto 0;
     padding: .5rem;
     display: none;
 }
 
 #food-dropdown button {
+    width: 25%;
     margin: auto .5rem auto 0;
     padding: .5rem;
     display: none;
@@ -228,3 +270,22 @@ button {
     background-color: #b3e8a3;
 }
 
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.margin-zero {
+    margin: 0;
+}
+
+.sticky {
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+
+.blur {
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+}

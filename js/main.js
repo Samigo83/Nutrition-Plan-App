@@ -22,15 +22,15 @@ async function getData(url) {
 
 async function postData(url, payload) {
     return fetch((url), {
-            method: "POST",
-            body: JSON.stringify(
-              payload
-            ),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
-            }
-        })
-            .then(response => response.json())
+        method: "POST",
+        body: JSON.stringify(
+            payload
+        ),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    })
+        .then(response => response.json())
 }
 
 // Function to check if input is number
@@ -67,7 +67,17 @@ async function signUp(evt) {
     let height = document.querySelector('#signup-height').value;
     let activityLevel = document.querySelector('#signup-activity-lvl').value;
     if (psw === psw2) {
-        const payload = {'fname': fname, 'lname': lname, 'email': email, 'psw': psw, 'age': age, 'sex': sex, 'weight': weight, 'height': height, 'activity_lvl': activityLevel};
+        const payload = {
+            'fname': fname,
+            'lname': lname,
+            'email': email,
+            'psw': psw,
+            'age': age,
+            'sex': sex,
+            'weight': weight,
+            'height': height,
+            'activity_lvl': activityLevel
+        };
         let signUpData = await postData(`${baseUrl}newuser`, payload);
         console.log(signUpData);
         if (!signUpData.active) {
@@ -76,12 +86,177 @@ async function signUp(evt) {
         } else {
             document.querySelector('#signup-modal').classList.add('hide');
             document.querySelector('#login-modal').classList.remove('hide');
+            document.querySelector('#page-content').classList.remove('blur');
             document.querySelector('#error-message').innerHTML = 'Sign up completed. Please login in.'
         }
     } else {
         document.querySelector('#signup-error-message').innerHTML = 'Passwords do not match.';
     }
 }
+
+// Function to update user
+
+async function updateUser(evt) {
+    evt.preventDefault();
+    let age = document.querySelector('#signup-age').value;
+    let sex = document.querySelector('#signup-sex').value;
+    let weight = document.querySelector('#signup-weight').value;
+    let height = document.querySelector('#signup-height').value;
+    let activityLevel = document.querySelector('#signup-activity-lvl').value;
+    const payload = {
+        'id': userId,
+        'age': age,
+        'sex': sex,
+        'weight': weight,
+        'height': height,
+        'activity_lvl': activityLevel
+    };
+    const updatedCalories = await postData(`${baseUrl}update`, payload);
+    document.querySelector('#calorie-intake').innerHTML = updatedCalories
+}
+
+
+// Function to return correct target object
+function returnTargetObject(name) {
+    if (name === 'breakfast') {
+        mealTotalTarget = breakfastValues
+    } else if (name === 'lunch') {
+        mealTotalTarget = lunchValues
+    } else if (name === 'dinner') {
+        mealTotalTarget = dinnerValues
+    } else if (name === 'snack') {
+        mealTotalTarget = snackValues
+    } else if (name === 'supper') {
+        mealTotalTarget = supperValues
+    } else {
+        mealTotalTarget = totalPlanValues
+    }
+    return mealTotalTarget
+}
+
+// Function to iterate object and to target
+function iterateAndAdd(meal) {
+    if (!meal) {
+        return
+    }
+    const targetName = meal['name'];
+    const MealTotalValues = returnTargetObject(meal['name']);
+    const targetTable = document.querySelector(`#${meal['name']}-total`);
+    const mealTotalCarb = document.querySelector(`#${meal['name']}-carbs`);
+    const mealTotalFat = document.querySelector(`#${meal['name']}-fat`);
+    const mealTotalProtein = document.querySelector(`#${meal['name']}-protein`);
+    const mealTotalEnergy = document.querySelector(`#${meal['name']}-energy`);
+    mealTotalCarb.innerHTML = meal['carb_amount'];
+    mealTotalFat.innerHTML = meal['fat_amount'];
+    mealTotalProtein.innerHTML = meal['protein_amount'];
+    mealTotalEnergy.innerHTML = meal['energy_amount'];
+    for (let object of meal.objects) {
+        const targetTr = document.createElement('tr');
+        targetTr.classList.add('food-item');
+        let newTd = document.createElement('td');
+        newTd.innerHTML = object['name'];
+        targetTr.appendChild(newTd);
+        newTd = document.createElement('td');
+        newTd.innerHTML = object['total_carbs'];
+        targetTr.appendChild(newTd);
+        newTd = document.createElement('td');
+        newTd.innerHTML = object['total_fat'];
+        targetTr.appendChild(newTd);
+        newTd = document.createElement('td');
+        newTd.innerHTML = object['total_protein'];
+        targetTr.appendChild(newTd);
+        newTd = document.createElement('td');
+        newTd.innerHTML = object['total_energy'];
+        targetTr.appendChild(newTd);
+        newTd = document.createElement('td');
+        newTd.innerHTML = object['id'];
+        newTd.classList.add('hide');
+        newTd.classList.add(`${targetName}-id`);
+        targetTr.appendChild(newTd);
+        newTd = document.createElement('td');
+        newTd.innerHTML = object['amount']
+        newTd.classList.add(`${targetName}-amount`);
+        targetTr.appendChild(newTd);
+        newTd = document.createElement('td');
+        const newButton = document.createElement('button');
+        newButton.innerHTML = 'Delete';
+        newButton.id = targetName;
+        newTd.appendChild(newButton);
+        targetTr.appendChild(newTd);
+        DeleteButtons(newButton, targetTr, object['total_carbs'], object['total_fat'], object['total_protein'], object['total_energy']);
+        targetTable.before(targetTr);
+        MealTotalValues['carb'] = sumWithPrecision(MealTotalValues['carb'], object['total_carbs'], 10);
+        MealTotalValues['fat'] = sumWithPrecision(MealTotalValues['fat'], object['total_fat'], 10);
+        MealTotalValues['protein'] = sumWithPrecision(MealTotalValues['protein'], object['total_protein'], 10);
+        MealTotalValues['energy'] = sumWithPrecision(MealTotalValues['energy'], object['total_energy'], 10);
+        totalPlanValues['carb'] = sumWithPrecision(totalPlanValues['carb'], object['total_carbs'], 10);
+        totalPlanValues['fat'] = sumWithPrecision(totalPlanValues['fat'], object['total_fat'], 10);
+        totalPlanValues['protein'] = sumWithPrecision(totalPlanValues['protein'], object['total_protein'], 10);
+        totalPlanValues['energy'] = sumWithPrecision(totalPlanValues['energy'], object['total_energy'], 10);
+    }
+}
+
+
+// Function to add data to table
+function buildPlanTable(data) {
+    reset();
+    document.querySelector('#plan-name-label').innerHTML = `<b>Plan name: ${data.name}</b>`;
+    document.querySelector('#plan-carbs').innerHTML = data['total_carb']
+    document.querySelector('#plan-fat').innerHTML = data['total_fat']
+    document.querySelector('#plan-protein').innerHTML = data['total_protein']
+    document.querySelector('#plan-energy').innerHTML = data['total_energy']
+
+    iterateAndAdd(data.breakfast)
+    iterateAndAdd(data.lunch)
+    iterateAndAdd(data.dinner)
+    iterateAndAdd(data.snack)
+    iterateAndAdd(data.supper)
+}
+
+// Function for delete buttons
+function DeleteButtons(button, trToDelete, carb, fat, protein, energy) {
+    button.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        const MealTotalValues = returnTargetObject(button.id)
+        totalPlanValues['carb'] = subWithPrecision(totalPlanValues['carb'], carb, 10);
+        totalPlanValues['fat'] = subWithPrecision(totalPlanValues['fat'], fat, 10);
+        totalPlanValues['protein'] = subWithPrecision(totalPlanValues['protein'], protein, 10);
+        totalPlanValues['energy'] = subWithPrecision(totalPlanValues['energy'], energy, 10);
+        MealTotalValues['carb'] = subWithPrecision(MealTotalValues['carb'], carb, 10);
+        MealTotalValues['fat'] = subWithPrecision(MealTotalValues['fat'], fat, 10);
+        MealTotalValues['protein'] = subWithPrecision(MealTotalValues['protein'], protein, 10);
+        MealTotalValues['energy'] = subWithPrecision(MealTotalValues['energy'], energy, 10);
+        document.querySelector(`#${button.id}-carbs`).innerHTML = mealTotalTarget['carb'];
+        document.querySelector(`#${button.id}-fat`).innerHTML = mealTotalTarget['fat'];
+        document.querySelector(`#${button.id}-protein`).innerHTML = mealTotalTarget['protein'];
+        document.querySelector(`#${button.id}-energy`).innerHTML = mealTotalTarget['energy'];
+        document.querySelector(`#plan-carbs`).innerHTML = totalPlanValues['carb'];
+        document.querySelector(`#plan-fat`).innerHTML = totalPlanValues['fat'];
+        document.querySelector(`#plan-protein`).innerHTML = totalPlanValues['protein'];
+        document.querySelector(`#plan-energy`).innerHTML = totalPlanValues['energy'];
+        trToDelete.remove()
+    });
+}
+
+// Function to list all user plans
+function userPlans(plans) {
+    const contentTarget = document.querySelector('#user-plans-content');
+    for (let plan of plans) {
+        const newButton = document.createElement('button');
+        newButton.innerHTML = plan;
+        newButton.addEventListener('click', async function (evt) {
+            evt.preventDefault();
+            await reset();
+            document.querySelector('#meals').classList.remove('hide');
+            document.querySelector('#plan').classList.remove('hide');
+            const planData = await getData(`${baseUrl}plan/get?user_id=${userId}&plan_name=${plan}`);
+            console.log(planData);
+            buildPlanTable(planData)
+        });
+        contentTarget.appendChild(newButton)
+    }
+}
+
 
 // Function to get all food items
 async function getAllFoodItems() {
@@ -150,6 +325,7 @@ async function addEventsToButtons() {
             const nutritionData = await getData(`${baseUrl}fooditem?food_id=${button.value}&amount=${button.previousElementSibling.value}`);
             const targetTable = document.querySelector(`#${mealTarget}-total`);
             const targetTr = document.createElement('tr');
+            targetTr.classList.add('food-item');
             let newTd = document.createElement('td');
             newTd.innerHTML = nutritionData['name'];
             targetTr.appendChild(newTd);
@@ -166,7 +342,7 @@ async function addEventsToButtons() {
             newTd.innerHTML = nutritionData['total_energy'];
             targetTr.appendChild(newTd);
             newTd = document.createElement('td');
-            newTd.innerHTML = button.value;
+            newTd.innerHTML = foodId;
             newTd.classList.add('hide');
             newTd.classList.add(`${mealTarget}-id`);
             targetTr.appendChild(newTd);
@@ -180,39 +356,8 @@ async function addEventsToButtons() {
             newButton.id = mealTarget;
             newTd.appendChild(newButton);
             targetTr.appendChild(newTd);
+            DeleteButtons(newButton, targetTr, nutritionData['total_carbs'], nutritionData['total_fat'], nutritionData['total_protein'], nutritionData['total_energy']);
             targetTable.before(targetTr);
-            newButton.addEventListener('click', function (evt) {
-                evt.preventDefault();
-                mealTarget = newButton.id;
-                if (mealTarget === 'breakfast') {
-                    mealTotalTarget = breakfastValues
-                } else if (mealTarget === 'lunch') {
-                    mealTotalTarget = lunchValues
-                } else if (mealTarget === 'dinner') {
-                    mealTotalTarget = dinnerValues
-                } else if (mealTarget === 'snack') {
-                    mealTotalTarget = snackValues
-                } else {
-                    mealTotalTarget = supperValues
-                }
-                totalPlanValues['carb'] = subWithPrecision(totalPlanValues['carb'], nutritionData['total_carbs'], 10);
-                totalPlanValues['fat'] = subWithPrecision(totalPlanValues['fat'], nutritionData['total_fat'], 10);
-                totalPlanValues['protein'] = subWithPrecision(totalPlanValues['protein'], nutritionData['total_protein'], 10);
-                totalPlanValues['energy'] = subWithPrecision(totalPlanValues['energy'], nutritionData['total_energy'], 10);
-                mealTotalTarget['carb'] = subWithPrecision(mealTotalTarget['carb'], nutritionData['total_carbs'], 10);
-                mealTotalTarget['fat'] = subWithPrecision(mealTotalTarget['fat'], nutritionData['total_fat'], 10);
-                mealTotalTarget['protein'] = subWithPrecision(mealTotalTarget['protein'], nutritionData['total_protein'], 10);
-                mealTotalTarget['energy'] = subWithPrecision(mealTotalTarget['energy'], nutritionData['total_energy'], 10);
-                document.querySelector(`#${mealTarget}-carbs`).innerHTML = mealTotalTarget['carb'];
-                document.querySelector(`#${mealTarget}-fat`).innerHTML = mealTotalTarget['fat'];
-                document.querySelector(`#${mealTarget}-protein`).innerHTML = mealTotalTarget['protein'];
-                document.querySelector(`#${mealTarget}-energy`).innerHTML = mealTotalTarget['energy'];
-                document.querySelector(`#plan-carbs`).innerHTML = totalPlanValues['carb'];
-                document.querySelector(`#plan-fat`).innerHTML = totalPlanValues['fat'];
-                document.querySelector(`#plan-protein`).innerHTML = totalPlanValues['protein'];
-                document.querySelector(`#plan-energy`).innerHTML = totalPlanValues['energy'];
-                targetTr.remove()
-            });
             totalPlanValues['carb'] = sumWithPrecision(totalPlanValues['carb'], nutritionData['total_carbs'], 10);
             totalPlanValues['fat'] = sumWithPrecision(totalPlanValues['fat'], nutritionData['total_fat'], 10);
             totalPlanValues['protein'] = sumWithPrecision(totalPlanValues['protein'], nutritionData['total_protein'], 10);
@@ -253,8 +398,27 @@ async function addEventsTolinks() {
     }
 }
 
-// Event listeners
+// Function to reset tables
+function reset() {
+    const foodItemTrs = document.getElementsByClassName('food-item');
+    for (let item of foodItemTrs) {
+        item.remove()
+    }
+    const targets = ['breakfast', 'lunch', 'dinner', 'snack', 'supper', 'plan'];
+    for (let target of targets) {
+        document.querySelector(`#${target}-carbs`).innerHTML = 0;
+        document.querySelector(`#${target}-fat`).innerHTML = 0;
+        document.querySelector(`#${target}-protein`).innerHTML = 0;
+        document.querySelector(`#${target}-energy`).innerHTML = 0;
+        let targetValues = returnTargetObject(target);
+        targetValues['carb'] = 0.0
+        targetValues['fat'] = 0.0
+        targetValues['protein'] = 0.0
+        targetValues['energy'] = 0.0
+    }
+}
 
+// Event listeners
 
 document.querySelector('#login-form').addEventListener('submit', async function (evt) {
     evt.preventDefault();
@@ -265,13 +429,14 @@ document.querySelector('#login-form').addEventListener('submit', async function 
     const password = document.querySelector('#psw').value;
     const payload = {'username': userName, 'psw': password};
     const userData = await postData(`${baseUrl}login`, payload);
-//    let userData = await getData(`${baseUrl}login?username=${userName}&password=${password}`);
     if (!userData.active) {
         document.querySelector('#error-message').innerHTML = 'Email not found or wrong password.'
     } else {
         console.log(userData);
         userId = userData['id'];
+        await userPlans(userData.plans);
         document.querySelector('#login-modal').classList.add('hide');
+        document.querySelector('#page-content').classList.remove('hide');
         document.querySelector('#buttons').classList.remove('hide');
         document.querySelector('#username').innerHTML = `${userData.name}`;
         document.querySelector('#calorie-intake').innerHTML = `${userData.total_calories}`;
@@ -322,8 +487,8 @@ document.querySelector('#supper-edit-btn').addEventListener('click', function ()
 });
 
 document.querySelector('#my-plan-button').addEventListener('click', function () {
-    document.querySelector('#meals').classList.toggle('hide');
-    document.querySelector('#plan').classList.toggle('hide');
+    document.querySelector('#signup-modal').classList.add('hide');
+    document.querySelector('#user-plans-content').classList.toggle('hide');
 });
 
 document.querySelector('#search-food-item').addEventListener('keyup', filterSearch);
@@ -397,6 +562,22 @@ document.querySelector('#signup-activity-lvl').addEventListener('click', functio
     document.querySelector('#signup-error-message').innerHTML = '';
 });
 
+document.querySelector('#user-settings-button').addEventListener(`click`, function () {
+    document.querySelector('#plan').classList.add('hide');
+    document.querySelector('#signup-modal').classList.remove('hide');
+    document.querySelector('#user-main-info').classList.add('hide');
+    document.querySelector('#signup-signup-btn').classList.add('hide');
+    document.querySelector('#update-btn').classList.remove('hide');
+    document.querySelector('#signup-cancel-btn').classList.add('hide');
+    document.querySelector('#update-cancel-btn').classList.remove('hide');
+    document.querySelector('#update-cancel-btn').addEventListener('click', evt => {
+        evt.preventDefault();
+        document.querySelector('#signup-modal').classList.add('hide');
+    });
+    document.querySelector('#update-btn').addEventListener('click', updateUser)
+});
+
+
 document.querySelector('#plan-save-btn').addEventListener('click', async function (evt) {
     evt.preventDefault();
     let breakfastIdArray = [];
@@ -426,7 +607,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         breakfastIdArray = 'None'
     }
-
     if (breakfastAmounts.length > 0) {
         for (let amount of breakfastAmounts) {
             breakfastAmountarray.push(amount.innerHTML)
@@ -434,7 +614,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         breakfastAmountarray = 'None'
     }
-
     if (lunchIds.length > 0) {
         for (let id of lunchIds) {
             lunchIdArray.push(id.innerHTML)
@@ -442,7 +621,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         lunchIdArray = 'None'
     }
-
     if (lunchAmounts.length > 0) {
         for (let amount of lunchAmounts) {
             lunchAmountarray.push(amount.innerHTML)
@@ -450,7 +628,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         lunchAmountarray = 'None'
     }
-
     if (dinnerIds.length > 0) {
         for (let id of dinnerIds) {
             dinnerIdArray.push(id.innerHTML)
@@ -458,7 +635,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         dinnerIdArray = 'None'
     }
-
     if (dinnerAmounts.length > 0) {
         for (let amount of dinnerAmounts) {
             dinnerAmountarray.push(amount.innerHTML)
@@ -466,7 +642,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         dinnerAmountarray = 'None'
     }
-
     if (snackIds.length > 0) {
         for (let id of snackIds) {
             snackIdArray.push(id.innerHTML)
@@ -474,7 +649,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         snackIdArray = 'None'
     }
-
     if (snackAmounts.length > 0) {
         for (let amount of snackAmounts) {
             snackAmountarray.push(amount.innerHTML)
@@ -482,7 +656,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         snackAmountarray = 'None'
     }
-
     if (supperIds.length > 0) {
         for (let id of supperIds) {
             supperIdArray.push(id.innerHTML)
@@ -490,7 +663,6 @@ document.querySelector('#plan-save-btn').addEventListener('click', async functio
     } else {
         supperIdArray = 'None'
     }
-
     if (supperAmounts.length > 0) {
         for (let amount of supperAmounts) {
             supperAmountarray.push(amount.innerHTML)
