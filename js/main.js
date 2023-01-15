@@ -2,6 +2,7 @@
 
 // Global variables
 let userId;
+let userMaxCalories;
 const baseUrl = 'http://127.0.0.1:5000/';
 let mealTarget;
 let totalPlanValues = {'carb': 0.0, 'fat': 0.0, 'protein': 0.0, 'energy': 0.0};
@@ -112,9 +113,18 @@ async function updateUser(evt) {
         'activity_lvl': activityLevel
     };
     const updatedCalories = await postData(`${baseUrl}update`, payload);
+    userMaxCalories = updatedCalories;
     document.querySelector('#calorie-intake').innerHTML = updatedCalories
 }
 
+// Function to check for nutricial recommendations
+function checkForRecs(userMaxEnergy, totalConsumedEnergy) {
+    if (totalConsumedEnergy > userMaxEnergy) {
+        document.querySelector('#plan-energy').classList.add('color-red')
+    } else {
+        document.querySelector('#plan-energy').classList.remove('color-red')
+    }
+}
 
 // Function to return correct target object
 function returnTargetObject(name) {
@@ -146,10 +156,10 @@ function iterateAndAdd(meal) {
     const mealTotalFat = document.querySelector(`#${meal['name']}-fat`);
     const mealTotalProtein = document.querySelector(`#${meal['name']}-protein`);
     const mealTotalEnergy = document.querySelector(`#${meal['name']}-energy`);
-    mealTotalCarb.innerHTML = meal['carb_amount'];
-    mealTotalFat.innerHTML = meal['fat_amount'];
-    mealTotalProtein.innerHTML = meal['protein_amount'];
-    mealTotalEnergy.innerHTML = meal['energy_amount'];
+    mealTotalCarb.innerHTML = `<b>${meal['carb_amount']}</b>`;
+    mealTotalFat.innerHTML = `<b>${meal['fat_amount']}</b>`;
+    mealTotalProtein.innerHTML = `<b>${meal['protein_amount']}</b>`;
+    mealTotalEnergy.innerHTML = `<b>${meal['energy_amount']}</b>`;
     for (let object of meal.objects) {
         const targetTr = document.createElement('tr');
         targetTr.classList.add('food-item');
@@ -198,13 +208,14 @@ function iterateAndAdd(meal) {
 
 
 // Function to add data to table
-function buildPlanTable(data) {
+function buildPlanTable(data, userMaxCalories) {
     reset();
     document.querySelector('#plan-name-label').innerHTML = `<b>Plan name: ${data.name}</b>`;
-    document.querySelector('#plan-carbs').innerHTML = data['total_carb']
-    document.querySelector('#plan-fat').innerHTML = data['total_fat']
-    document.querySelector('#plan-protein').innerHTML = data['total_protein']
-    document.querySelector('#plan-energy').innerHTML = data['total_energy']
+    document.querySelector('#plan-carbs').innerHTML = `<b>${data['total_carb']}</b>`;
+    document.querySelector('#plan-fat').innerHTML = `<b>${data['total_fat']}</b>`;
+    document.querySelector('#plan-protein').innerHTML = `<b>${data['total_protein']}</b>`;
+    document.querySelector('#plan-energy').innerHTML = `<b>${data['total_energy']}</b>`;
+    checkForRecs(userMaxCalories, data['total_energy']);
 
     iterateAndAdd(data.breakfast)
     iterateAndAdd(data.lunch)
@@ -222,18 +233,19 @@ function DeleteButtons(button, trToDelete, carb, fat, protein, energy) {
         totalPlanValues['fat'] = subWithPrecision(totalPlanValues['fat'], fat, 10);
         totalPlanValues['protein'] = subWithPrecision(totalPlanValues['protein'], protein, 10);
         totalPlanValues['energy'] = subWithPrecision(totalPlanValues['energy'], energy, 10);
+        checkForRecs(userMaxCalories, totalPlanValues['energy']);
         MealTotalValues['carb'] = subWithPrecision(MealTotalValues['carb'], carb, 10);
         MealTotalValues['fat'] = subWithPrecision(MealTotalValues['fat'], fat, 10);
         MealTotalValues['protein'] = subWithPrecision(MealTotalValues['protein'], protein, 10);
         MealTotalValues['energy'] = subWithPrecision(MealTotalValues['energy'], energy, 10);
-        document.querySelector(`#${button.id}-carbs`).innerHTML = mealTotalTarget['carb'];
-        document.querySelector(`#${button.id}-fat`).innerHTML = mealTotalTarget['fat'];
-        document.querySelector(`#${button.id}-protein`).innerHTML = mealTotalTarget['protein'];
-        document.querySelector(`#${button.id}-energy`).innerHTML = mealTotalTarget['energy'];
-        document.querySelector(`#plan-carbs`).innerHTML = totalPlanValues['carb'];
-        document.querySelector(`#plan-fat`).innerHTML = totalPlanValues['fat'];
-        document.querySelector(`#plan-protein`).innerHTML = totalPlanValues['protein'];
-        document.querySelector(`#plan-energy`).innerHTML = totalPlanValues['energy'];
+        document.querySelector(`#${button.id}-carbs`).innerHTML = `<b>${mealTotalTarget['carb']}</b>`;
+        document.querySelector(`#${button.id}-fat`).innerHTML = `<b>${mealTotalTarget['fat']}</b>`;
+        document.querySelector(`#${button.id}-protein`).innerHTML = `<b>${mealTotalTarget['protein']}</b>`;
+        document.querySelector(`#${button.id}-energy`).innerHTML = `<b>${mealTotalTarget['energy']}</b>`;
+        document.querySelector(`#plan-carbs`).innerHTML = `<b>${totalPlanValues['carb']}</b>`;
+        document.querySelector(`#plan-fat`).innerHTML = `<b>${totalPlanValues['fat']}</b>`;
+        document.querySelector(`#plan-protein`).innerHTML = `<b>${totalPlanValues['protein']}</b>`;
+        document.querySelector(`#plan-energy`).innerHTML = `<b>${totalPlanValues['energy']}</b>`;
         trToDelete.remove()
     });
 }
@@ -247,11 +259,14 @@ function userPlans(plans) {
         newButton.addEventListener('click', async function (evt) {
             evt.preventDefault();
             await reset();
-            document.querySelector('#meals').classList.remove('hide');
-            document.querySelector('#plan').classList.remove('hide');
             const planData = await getData(`${baseUrl}plan/get?user_id=${userId}&plan_name=${plan}`);
-            console.log(planData);
-            buildPlanTable(planData)
+            buildPlanTable(planData, userMaxCalories);
+            document.querySelector('#plan-name-edit-btn').classList.remove('hide');
+            document.querySelector('#plan-name').classList.add('hide');
+            document.querySelector('#plan-name').value = '';
+            document.querySelector('#plan-name-ok-btn').classList.add('hide');
+            document.querySelector('#user-plans-content').classList.add('hide');
+            document.querySelector('#plan').classList.remove('hide');
         });
         contentTarget.appendChild(newButton)
     }
@@ -362,18 +377,19 @@ async function addEventsToButtons() {
             totalPlanValues['fat'] = sumWithPrecision(totalPlanValues['fat'], nutritionData['total_fat'], 10);
             totalPlanValues['protein'] = sumWithPrecision(totalPlanValues['protein'], nutritionData['total_protein'], 10);
             totalPlanValues['energy'] = sumWithPrecision(totalPlanValues['energy'], nutritionData['total_energy'], 10);
+            checkForRecs(userMaxCalories, totalPlanValues['energy']);
             mealTotalTarget['carb'] = sumWithPrecision(mealTotalTarget['carb'], nutritionData['total_carbs'], 10);
             mealTotalTarget['fat'] = sumWithPrecision(mealTotalTarget['fat'], nutritionData['total_fat'], 10);
             mealTotalTarget['protein'] = sumWithPrecision(mealTotalTarget['protein'], nutritionData['total_protein'], 10);
             mealTotalTarget['energy'] = sumWithPrecision(mealTotalTarget['energy'], nutritionData['total_energy'], 10);
-            document.querySelector(`#${mealTarget}-carbs`).innerHTML = mealTotalTarget['carb'];
-            document.querySelector(`#${mealTarget}-fat`).innerHTML = mealTotalTarget['fat'];
-            document.querySelector(`#${mealTarget}-protein`).innerHTML = mealTotalTarget['protein'];
-            document.querySelector(`#${mealTarget}-energy`).innerHTML = mealTotalTarget['energy'];
-            document.querySelector(`#plan-carbs`).innerHTML = totalPlanValues['carb'];
-            document.querySelector(`#plan-fat`).innerHTML = totalPlanValues['fat'];
-            document.querySelector(`#plan-protein`).innerHTML = totalPlanValues['protein'];
-            document.querySelector(`#plan-energy`).innerHTML = totalPlanValues['energy'];
+            document.querySelector(`#${mealTarget}-carbs`).innerHTML = `<b>${mealTotalTarget['carb']}</b>`;
+            document.querySelector(`#${mealTarget}-fat`).innerHTML = `<b>${mealTotalTarget['fat']}</b>`;
+            document.querySelector(`#${mealTarget}-protein`).innerHTML = `<b>${mealTotalTarget['protein']}</b>`;
+            document.querySelector(`#${mealTarget}-energy`).innerHTML = `<b>${mealTotalTarget['energy']}</b>`;
+            document.querySelector(`#plan-carbs`).innerHTML = `<b>${totalPlanValues['carb']}</b>`;
+            document.querySelector(`#plan-fat`).innerHTML = `<b>${totalPlanValues['fat']}</b>`;
+            document.querySelector(`#plan-protein`).innerHTML = `<b>${totalPlanValues['protein']}</b>`;
+            document.querySelector(`#plan-energy`).innerHTML = `<b>${totalPlanValues['energy']}</b>`;
         })
     }
 }
@@ -400,7 +416,8 @@ async function addEventsTolinks() {
 
 // Function to reset tables
 function reset() {
-    const foodItemTrs = document.getElementsByClassName('food-item');
+    document.querySelector('#plan-name').value = '';
+    const foodItemTrs = document.querySelectorAll('.food-item');
     for (let item of foodItemTrs) {
         item.remove()
     }
@@ -416,6 +433,15 @@ function reset() {
         targetValues['protein'] = 0.0
         targetValues['energy'] = 0.0
     }
+}
+
+// Function to reset active buttons
+function resetActiveButtons() {
+    document.querySelector('#breakfast-edit-btn').classList.remove('button-active');
+    document.querySelector('#lunch-edit-btn').classList.remove('button-active');
+    document.querySelector('#dinner-edit-btn').classList.remove('button-active');
+    document.querySelector('#snack-edit-btn').classList.remove('button-active');
+    document.querySelector('#supper-edit-btn').classList.remove('button-active')
 }
 
 // Event listeners
@@ -434,6 +460,7 @@ document.querySelector('#login-form').addEventListener('submit', async function 
     } else {
         console.log(userData);
         userId = userData['id'];
+        userMaxCalories = userData['total_calories']
         await userPlans(userData.plans);
         document.querySelector('#login-modal').classList.add('hide');
         document.querySelector('#page-content').classList.remove('hide');
@@ -455,33 +482,45 @@ document.querySelector('#plan-name-ok-btn').addEventListener('click', function (
     let planName = document.querySelector('#plan-name').value;
     document.querySelector('#plan-name-label').innerHTML = `<b>Plan name: ${planName}</b>`;
     document.querySelector('#plan-name').classList.add('hide');
+    document.querySelector('#plan-name-edit-btn').classList.remove('hide');
     document.querySelector('#plan-name-ok-btn').classList.add('hide');
 });
 
 document.querySelector('#plan-name-edit-btn').addEventListener('click', function (evt) {
     evt.preventDefault();
-    document.querySelector('#plan-name').classList.toggle('hide');
-    document.querySelector('#plan-name-ok-btn').classList.toggle('hide');
+    document.querySelector('#plan-name').classList.remove('hide');
+    document.querySelector('#plan-name-edit-btn').classList.add('hide');
+    document.querySelector('#plan-name-ok-btn').classList.remove('hide');
     document.querySelector('#save-error-message').classList.add('hide');
 });
 
-document.querySelector('#breakfast-edit-btn').addEventListener('click', function () {
+document.querySelector('#breakfast-edit-btn').addEventListener('click', function (evt) {
+    resetActiveButtons();
+    evt.target.classList.add('button-active');
     mealTarget = 'breakfast';
     document.querySelector('#dropdown').classList.remove('hide');
 });
-document.querySelector('#lunch-edit-btn').addEventListener('click', function () {
+document.querySelector('#lunch-edit-btn').addEventListener('click', function (evt) {
+    resetActiveButtons();
+    evt.target.classList.add('button-active');
     mealTarget = 'lunch'
     document.querySelector('#dropdown').classList.remove('hide');
 });
-document.querySelector('#dinner-edit-btn').addEventListener('click', function () {
+document.querySelector('#dinner-edit-btn').addEventListener('click', function (evt) {
+    resetActiveButtons();
+    evt.target.classList.add('button-active');
     mealTarget = 'dinner'
     document.querySelector('#dropdown').classList.remove('hide');
 });
-document.querySelector('#snack-edit-btn').addEventListener('click', function () {
+document.querySelector('#snack-edit-btn').addEventListener('click', function (evt) {
+    resetActiveButtons();
+    evt.target.classList.add('button-active');
     mealTarget = 'snack'
     document.querySelector('#dropdown').classList.remove('hide');
 });
-document.querySelector('#supper-edit-btn').addEventListener('click', function () {
+document.querySelector('#supper-edit-btn').addEventListener('click', function (evt) {
+    resetActiveButtons();
+    evt.target.classList.add('button-active');
     mealTarget = 'supper'
     document.querySelector('#dropdown').classList.remove('hide');
 });
@@ -575,6 +614,14 @@ document.querySelector('#user-settings-button').addEventListener(`click`, functi
         document.querySelector('#signup-modal').classList.add('hide');
     });
     document.querySelector('#update-btn').addEventListener('click', updateUser)
+});
+
+document.querySelector('#new-plan-button').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    reset();
+    document.querySelector('#plan-name-label').innerHTML = '<b>Plan name</b>';
+    document.querySelector('#user-plans-content').classList.add('hide');
+    document.querySelector('#plan').classList.remove('hide')
 });
 
 
