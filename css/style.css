@@ -14,6 +14,17 @@ tbody {
 button {
     margin: .5rem;
     border-radius: 4px;
+    transition: all 200ms;
+}
+
+button:hover {
+    background-color: darksalmon;
+    scale: 1.2;
+}
+
+.button-active {
+    background-color: darksalmon;
+    scale: 1.2;
 }
 
 #container {
@@ -247,7 +258,7 @@ button {
 }
 
 .drop-down-content a:hover {
-   background-color: #d5d5d5;
+    background-color: #d5d5d5;
 }
 
 .flex {
@@ -289,3 +300,11 @@ button {
     filter: blur(8px);
     -webkit-filter: blur(8px);
 }
+
+.color-red {
+    color: #e53943;
+    scale: 1.1;
+}
+
+
+
