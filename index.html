@@ -10,20 +10,20 @@
 </head>
 <body>
 <div id="container">
-    <header id="page-header" class="flex center">
+    <header id="page-header" class="flex">
         <h1>Nutrition planning app</h1>
-    </header>
-    <div id="buttons" class="hide flex space-between">
-        <div id="user-plan-buttons">
-            <button id="my-plan-button" class="margin-zero">Plans</button>
-            <div id="user-plans-content" class="hide margin-zero">
-                <button id="new-plan-button">New Plan</button>
+        <div id="buttons" class="hide flex space-evenly">
+            <div id="user-plan-buttons">
+                <button id="my-plan-button">Plans</button>
+                <div id="user-plans-content" class="hide">
+                    <button id="new-plan-button">New Plan</button>
+                </div>
+            </div>
+            <div id="settings-buttons">
+                <button id="user-settings-button">Settings</button>
             </div>
         </div>
-        <div id="settings-buttons">
-            <button id="user-settings-button">Settings</button>
-        </div>
-    </div>
+    </header>
     <div id="page-content" class="flex hide">
         <div id="user-info">
             <div id="user-information">
@@ -201,8 +201,8 @@
         </div>
     </div>
     <div id="modal-content" class="flex center">
-        <div id="login-modal" class="flex center">
-            <form id="login-form">
+        <div id="login-modal">
+            <form id="login-form" class="flex">
                 <label for="uname"><b>Username</b></label>
                 <input id="uname" type="text" placeholder="Enter your email" required>
 
@@ -211,7 +211,7 @@
 
                 <button id="login-btn" type="submit">Login</button>
                 <button id="login-signup-btn" type="button">Sign up</button>
-                <p id="error-message"></p>
+                <p id="error-message" class="hide color-red"></p>
             </form>
         </div>
         <div id="signup-modal" class="hide">
@@ -262,9 +262,9 @@
             </form>
             <div class="flex center">
                 <button id="signup-signup-btn" type="submit" form="signup-form">Sign up</button>
-                <button id="update-btn" class="hide"  type="submit" form="signup-form">Update</button>
+                <button id="update-btn" class="hide" type="submit" form="signup-form">Update</button>
                 <button id="signup-cancel-btn" type="button">Cancel</button>
-                <button id="update-cancel-btn" type="button">Cancel</button>
+                <button id="update-cancel-btn" class="hide" type="button">Cancel</button>
             </div>
         </div>
     </div>

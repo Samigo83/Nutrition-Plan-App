@@ -1,5 +1,7 @@
 body {
-    background-color: #deffd7;
+    margin: 0;
+    background-image: linear-gradient(to right, rgba(98, 45, 176, 0.8), rgb(0, 158, 166,1));
+    color: #f8f8f8;
 }
 
 h3 {
@@ -12,9 +14,16 @@ tbody {
 }
 
 button {
-    margin: .5rem;
-    border-radius: 4px;
+    margin: .5rem 1rem 0 3rem;
+    border: none;
+    padding: .5rem;
+    font-size: 1.1rem;
     transition: all 200ms;
+}
+
+label {
+    margin: .5rem 0 .5rem 0;
+    font-size: 1.1rem;
 }
 
 button:hover {
@@ -31,8 +40,18 @@ button:hover {
     height: auto;
 }
 
+#page-header {
+    width: 100%;
+    background-color: #6663c7;
+}
+
+#page-header h1 {
+    margin-left: .5rem;
+    margin-right: 1rem;
+}
+
 #buttons {
-    background-color: #a3d7a2;
+    background-color: #5350a2;
     align-items: center;
     padding: 1rem;
     margin: 0;
@@ -41,13 +60,13 @@ button:hover {
 #page-content {
     height: inherit;
     position: relative;
-    background-color: #fdfffd;
+    background-color: transparent;
     flex-wrap: wrap;
 }
 
 #user-info {
     width: 100%;
-    background-color: #deffd7;
+    background-color: transparent;
 }
 
 #plan {
@@ -80,7 +99,7 @@ button:hover {
 }
 
 #user-plans-content button {
-    margin: 0;
+    margin: 0 1rem 0 3rem;
 }
 
 #plan-name-div {
@@ -164,15 +183,23 @@ button:hover {
 
 #login-modal {
     position: absolute;
-    width: 100%;
-    background-color: #deffd7;
+    margin-top: 5rem;
+    padding: 1rem;
+    height: fit-content;
+    border: 2px black solid;
+    border-radius: 6px;
+    background-color: rgba(98, 45, 176, 0.2);
+}
+
+#login-modal button {
+    margin: 1rem 0 0 0;
 }
 
 #signup-modal {
     position: absolute;
     width: 50%;
     margin: auto;
-    background-color: #deffd7;
+    background-color: transparent;
 }
 
 
@@ -221,7 +248,7 @@ button:hover {
 }
 
 #login-modal form {
-    margin-top: 10rem;
+    flex-direction: column;
 }
 
 .drop-down-content {
@@ -267,6 +294,10 @@ button:hover {
 
 .space-between {
     justify-content: space-between;
+}
+
+.space-evenly {
+    justify-content: space-evenly;
 }
 
 .hide {

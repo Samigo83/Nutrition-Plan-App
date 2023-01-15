@@ -456,7 +456,8 @@ document.querySelector('#login-form').addEventListener('submit', async function 
     const payload = {'username': userName, 'psw': password};
     const userData = await postData(`${baseUrl}login`, payload);
     if (!userData.active) {
-        document.querySelector('#error-message').innerHTML = 'Email not found or wrong password.'
+        document.querySelector('#error-message').innerHTML = `<b>Email not found or wrong password</b>`;
+        document.querySelector('#error-message').classList.remove('hide')
     } else {
         console.log(userData);
         userId = userData['id'];
