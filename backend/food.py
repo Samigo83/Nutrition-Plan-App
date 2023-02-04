@@ -32,5 +32,20 @@ class AllFoods:
         self.foods = foods
 
 
+class Food_values:
+    def __init__(self, id):
+        sql = f"SELECT bestloc FROM food, component_value, component " \
+              f"WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname " \
+              f"AND food.foodid = {id} and component.eufdname in ('ENERC', 'FAT', 'CHOAVL', 'PROT') " \
+              f"order by component.eufdname asc"
+        query_cursor = connection.cursor()
+        query_cursor.execute(sql)
+        values = query_cursor.fetchall()
+        self.energy = round(float(values[1][0].replace(',', '.')) * 0.2390, 1)
+        self.fat = round(float(values[2][0].replace(',', '.')), 1)
+        self.carbs = round(float(values[0][0].replace(',', '.')), 1)
+        self.protein = round(float(values[3][0].replace(',', '.')), 1)
+
+
 if __name__ == '__main__':
-    print(Food(5, 133).total_energy)
+    print(Food_values(153).energy)

@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 from user import *
-from food import Food, AllFoods
+from food import *
 from plan import *
 import json
 
@@ -43,6 +43,14 @@ def update():
 @app.route('/login/plan')
 def plan():
     return json.dumps(AllFoods(), default=lambda o: o.__dict__, indent=4)
+
+
+# http://127.0.0.1:5000/login/plan/values/food_id=${button.value}
+@app.route('/login/plan/values')
+def values():
+    args = request.args
+    food_id = int(args.get('food_id'))
+    return json.dumps(Food_values(food_id), default=lambda o: o.__dict__, indent=4)
 
 
 # http://127.0.0.1:5000/fooditem?food_id=${button.value}&amount=${button.previousElementSibling.value}
@@ -136,7 +144,6 @@ def save():
 @app.route('/plan/get')
 def get():
     args = request.args
-
     plan_name = args.get('plan_name').lower()
     user_id = args.get('user_id')
     plan = get_plan(user_id, plan_name)
