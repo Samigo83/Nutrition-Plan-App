@@ -1,7 +1,6 @@
 body {
     margin: 0;
-    background-image: linear-gradient(to right, rgba(98, 45, 176, 0.8), rgb(0, 158, 166,1));
-    color: #f8f8f8;
+    color: black;
 }
 
 h3 {
@@ -42,16 +41,14 @@ button:hover {
 
 #page-header {
     width: 100%;
-    background-color: #6663c7;
+    border-bottom: 2px black solid;
 }
 
 #page-header h1 {
-    margin-left: .5rem;
-    margin-right: 1rem;
+    margin: .5rem 1rem 0 .5rem
 }
 
 #buttons {
-    background-color: #5350a2;
     align-items: center;
     padding: 1rem;
     margin: 0;
@@ -282,6 +279,11 @@ button:hover {
     margin: auto .5rem auto 0;
     padding: .5rem;
     display: none;
+}
+
+#food-values {
+    position: absolute;
+    border: 2px solid black;
 }
 
 .drop-down-content a:hover {
