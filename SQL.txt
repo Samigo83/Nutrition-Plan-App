@@ -118,6 +118,7 @@ DELETE user_plans WHERE users.id = 1;
 INSERT INTO plan_br (plan_id, br_id, br_amount) VALUES (1, 2, 3)
 SELECT lnc_id, lnc_amount FROM users, user_plans, plan_lnc WHERE users.id = user_plans.user_id AND user_plans.id = plan_lnc.plan_id AND user_plans.id = "1"
 
-
-
-
+SELECT food.foodname, food.foodid, bestloc, component.eufdname FROM food, component_value, component
+WHERE food.foodid = component_value.foodid and component_value.eufdname = component.eufdname
+AND food.foodid = food.foodid and component.eufdname in ('ENERC', 'FAT', 'CHOAVL', 'PROT')
+order by food.foodid asc

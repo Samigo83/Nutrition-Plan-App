@@ -42,15 +42,7 @@ def update():
 
 @app.route('/login/plan')
 def plan():
-    return json.dumps(AllFoods(), default=lambda o: o.__dict__, indent=4)
-
-
-# http://127.0.0.1:5000/login/plan/values/food_id=${button.value}
-@app.route('/login/plan/values')
-def values():
-    args = request.args
-    food_id = int(args.get('food_id'))
-    return json.dumps(Food_values(food_id), default=lambda o: o.__dict__, indent=4)
+    return json.dumps(get_all_food_items(), default=lambda o: o.__dict__, indent=4)
 
 
 # http://127.0.0.1:5000/fooditem?food_id=${button.value}&amount=${button.previousElementSibling.value}

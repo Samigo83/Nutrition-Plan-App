@@ -77,6 +77,10 @@ button:hover {
     max-height: 1400px;
     max-width: 40%;
     overflow-y: auto;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    background-color: #deffd7;
+    border: 1px solid #ddd;
 }
 
 #user-plans {
@@ -248,15 +252,7 @@ button:hover {
     flex-direction: column;
 }
 
-.drop-down-content {
-    margin-left: 1rem;
-    margin-top: 1rem;
-    background-color: #deffd7;
-    border: 1px solid #ddd;
-    z-index: 1;
-}
-
-.drop-down-content a {
+#dropdown a {
     width: 50%;
     color: black;
     margin: .5rem;
@@ -281,17 +277,18 @@ button:hover {
 }
 
 .food-values {
+    position: absolute;
+    top: -70px;
     z-index: 999;
     border: 2px solid black;
     border-radius: 6px;
     background: #c0ffb8;
     padding: .5rem;
     margin-left: 1rem;
-    margin-right: 1rem;
     box-shadow: 10px 10px 5px lightblue;
 }
 
-.drop-down-content a:hover {
+#dropdown a:hover {
     background-color: #d5d5d5;
 }
 
